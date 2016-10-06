@@ -12,17 +12,17 @@ library(GEOquery);
 
 
 
-#do regular gene expression analysis (which ones is impt)
+#do regular gene expression analysis, find differentially expressed genes
 
 #get distance matrix
 #maybe use daisy, lab3
 
-#do mapper, what clusters do the important genes end up in
+#do mapper, what clusters do the differentially expressed genes end up in
  
-#if multiple, whys that
+#if multiple clusters, whys that
 
 #regardless of multiple or single, what genes were not significantly expressed
-# but are in the same cluster as the significantly expressed ones
+# but are in the same cluster as the significantly expressed ones any significance to these
 
 
 #look at the pathways of the important genes
