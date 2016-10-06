@@ -1,3 +1,5 @@
+library(TDAmapper)
+
 par(mfrow=c(2,1))
 overlap = 50
 intervals = 10
