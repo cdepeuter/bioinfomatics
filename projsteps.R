@@ -27,18 +27,25 @@ affy_exp_names <- rownames(affy_exp);
 
 disease_state<-as.character(pData(eset)[,2])
 combn <- factor(disease_state);
+#levels(combn)=c("metastatic (4T1) breast carcinoma","nonmetastatic (67NR) breast carcinoma","naÃ¯ve")
 design <- model.matrix(~combn);
 fit <- lmFit(affy_exp,design);
 efit <- eBayes(fit);
-diff_gene_table <- topTable(efit, number = nrow(affy_exp), p.value = 0.01);
+diff_gene_table <- topTable(efit, number = nrow(affy_exp), p.value = 0.02);
 diff_genes <- rownames(diff_gene_table)
 #TODO turn these into acutal gene ids
 
 #filtering out for initial mapper, lets use 200 + diff expressed
 df <- tbl_df(affy_exp)
 fil<-affy_exp[diff_genes,]
-fil2<-affy_exp[sample(nrow(affy_exp), 200),]
+fil2<-affy_exp[sample(nrow(affy_exp), 500),]
 fil3 <- rbind(fil, fil2)
+count=0
+degpos=list()
+fil3=t(fil3)
+corr=cor(fil3,method="spearman")
+for(i in 1:length(corr[,1])){if(rownames(corr)[i] %in% diff_genes){degpos[count]=i;count=count+1}}
+degpos=unlist(degpos)
 
 #get distance matrix
 #maybe use daisy, lab3
@@ -46,15 +53,16 @@ fil3 <- rbind(fil, fil2)
 #do mapper, what clusters do the differentially expressed genes end up in
 
 #par(mfrow=c(2,1))
-overlap = 50
-intervals = 10
-bins = 10
-filter = 2*cos(0.5*(1:100)) #what is the filter and why, should capture somethign about data
-
-
+overlap = 10
+intervals = 20
+bins = 20
+#filter = 2*cos(0.5*(1:100)) #what is the filter and why, should capture somethign about data
+filter=list()
+for(i in 1:545){filter[[i]]=mean(corr[i,])}
+filter=unlist(filter)
 
 m1 <- mapper1D(
-  distance_matrix = dist(data),
+  distance_matrix = corr,
   filter_values = filter,
   num_intervals = intervals,
   percent_overlap = overlap,
@@ -78,5 +86,3 @@ plot(g1, layout = layout.auto(g1) )
 #use TOPAseq for some topological analysis of the pathways
 
 #how do we evaluate these results?
-
-
