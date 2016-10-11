@@ -12,12 +12,14 @@ library(GEOquery);
 library(plyr);
 library(dplyr)
 
-#should we be looking at diff exprssion across each, like which genes are for which cancer
+#is teh data normalized
 
-gds_set_name <- "GDS5437";
+gds_set_name <- "GDS1439"
 gds <- getGEO(gds_set_name);
 # Convert the downloaded dataset into an ExpressionSet object(functions you might need: "GDS2eSet")
 eset <- GDS2eSet(gds,do.log2=TRUE);
+
+
 # Convert ExpressionSet to a matrix(functions you might need: "as.matrix")
 affy_exp <- as.matrix(eset);
 # Obtain the affymetrix ID of each row, we need to map these ID to Uniprot gene ID in the next step 
@@ -31,15 +33,15 @@ combn <- factor(disease_state);
 design <- model.matrix(~combn);
 fit <- lmFit(affy_exp,design);
 efit <- eBayes(fit);
-diff_gene_table <- topTable(efit, number = nrow(affy_exp), p.value = 0.02);
+diff_gene_table <- topTable(efit, number = nrow(affy_exp),p.value =  0.000001);
 diff_genes <- rownames(diff_gene_table)
 #TODO turn these into acutal gene ids
 
 #filtering out for initial mapper, lets use 200 + diff expressed
 df <- tbl_df(affy_exp)
 fil<-affy_exp[diff_genes,]
-fil2<-affy_exp[sample(nrow(affy_exp), 500),]
-fil3 <- rbind(fil, fil2)
+fil2<-affy_exp[sample(nrow(affy_exp), 1500),]
+fil3 <- unique(rbind(fil, fil2))
 geneIds <- rownames(fil3)
 count=0
 degpos=list()
@@ -61,7 +63,6 @@ bins = 20
 filter=list()
 for(i in 1:nrow(fil3)){filter[[i]]=mean(corr[i,])}
 filter=unlist(filter)
-
 library(TDAmapper)
 m1 <- mapper1D(
   distance_matrix = corr,
