@@ -76,7 +76,7 @@ library(igraph)
 g1 <- graph.adjacency(m1$adjacency, mode="undirected")
 
 #dnt plot yet
-#plot(g1, layout = layout.auto(g1) )
+plot(g1, layout = layout.auto(g1) )
 
 
 #so what genes end up where
@@ -139,3 +139,19 @@ plot(g1, layout = layout.auto(g1), vertex.color=colorRampPalette(c('blue', 'red'
 #use TOPAseq for some topological analysis of the pathways
 
 #how do we evaluate these results?
+install.packages("cluster")
+install.packages("HSAUR")
+install.packages("fpc")
+library(cluster)
+library(HSAUR)
+library(fpc)
+
+regClust=kmeans(fil3,centers=m1$num_vertices)
+toClusterReg=list()
+for(i in 1:length(regClust$cluster)){
+  toClusterReg[i]=as.numeric(regClust$cluster[i])
+}
+getProp_reg <- function(clusternumber){length(which(which(toClusterReg==clusternumber) %in% diff_gene_nums ))/length(which(toClusterReg==clusternumber))}
+pct_diffexp_reg  <- unlist(lapply(seq(from = 1, to = m1$num_vertices), getProp_reg))
+plotcluster(fil3,regClust$cluster)
+clusplot(fil3,regClust$cluster,color=TRUE,shade=TRUE,lines=0)
