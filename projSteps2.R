@@ -99,8 +99,23 @@ getProp <- function(vert){sum(m1$points_in_vertex[[vert]] %in% diff_gene_nums)/l
 pct_diffexp  <- unlist(lapply(seq(from = 1, to = m1$num_vertices), getProp))
 
 
+#get actual gene name by geneId
+dtt<-Table(gds)
+refToId<-data.frame(as.character(dtt$IDENTIFIER))
+rownames(refToId) <- as.character(dtt$ID_REF)
+geneIdToName <- function(id){return(as.character(refToId[id, 1]))}
+thisClustersGenes <-unlist(lapply(getGenesByCluster(1),geneIdToName))
+
+#for each cluster, find the genes in that cluster by name
+
+
+#are clusters different than reg k-means
+
+
+
 #plot
 plot(g1, layout = layout.auto(g1), vertex.color=colorRampPalette(c('blue', 'red'))(length(pct_diffexp))[rank(pct_diffexp)])
+
 
 
 
