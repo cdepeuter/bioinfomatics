@@ -189,3 +189,13 @@ for(i in 1:m1$num_vertices){
   #fisherreg[[i]]=fisher.test(x,alternative = "greater")
   #if(minreg>fisherreg[[i]]$p.value){minreg=fisherreg[[i]]$p.value}
 #}
+prclust=princomp(regClust$centers)
+weights=loadings(prclust)[,1:2]
+actual=regClust$centers %*% weights
+actual=data.frame(actual)
+actual$percent=pct_diffexp_reg
+actual$color[actual$percent<.3 & actual$percent>0]='red1'
+actual$color[actual$percent<.6 & actual$percent>=.3]='red2'
+actual$color[actual$percent>=.6]='red3'
+actual$color[actual$percent==0]="blue"
+plot(actual[,1:2],col=actual$color,bg=actual$color,pch=21,cex=2)
