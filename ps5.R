@@ -6,7 +6,6 @@ source("https://bioconductor.org/biocLite.R"); ## try http:// if https:// URLs a
 biocLite("affy");
 biocLite("limma");
 biocLite("GEOquery");
-library(TDAmapper)
 library(affy);
 library(limma);
 library(GEOquery);
@@ -15,11 +14,11 @@ library(dplyr);
 library(cluster);
 library(HSAUR);
 library(fpc);
-
+library(TDAmapper)
 
 #is teh data normalized
 set.seed(21)
-gds_set_name <- "GDS5437"
+gds_set_name <- "GDS1439"
 gds <- getGEO(gds_set_name);
 # Convert the downloaded dataset into an ExpressionSet object(functions you might need: "GDS2eSet")
 eset <- GDS2eSet(gds,do.log2=TRUE);
@@ -38,14 +37,14 @@ combn <- factor(disease_state);
 design <- model.matrix(~combn);
 fit <- lmFit(affy_exp,design);
 efit <- eBayes(fit);
-diff_gene_table <- topTable(efit, number = nrow(affy_exp),p.value =  0.02);
+diff_gene_table <- topTable(efit, number = nrow(affy_exp),p.value =  0.000001);
 diff_genes <- rownames(diff_gene_table)
 #TODO turn these into acutal gene ids
 
 #filtering out for initial mapper, lets use 200 + diff expressed
 df <- tbl_df(affy_exp)
 fil<-affy_exp[diff_genes,]
-fil2<-affy_exp[sample(nrow(affy_exp), 500),]
+fil2<-affy_exp[sample(nrow(affy_exp), 1500),]
 fil3 <- unique(rbind(fil, fil2))
 geneIds <- rownames(fil3)
 count=0
@@ -64,7 +63,6 @@ overlap = 10
 intervals = 20
 bins = 20
 
-
 disease_state_benign=factor("benign",levels=c("benign","primary","metastatic"))
 benigndata=affy_exp[,1:6]
 benignpca=princomp(benigndata)
@@ -82,13 +80,12 @@ reduced_dim_disease=diseasedata %*% weights_disease
 modeled_disease_filter=reduced_dim_disease %*% coeff_benign
 filterforfil3=modeled_disease_filter[geneIds,]
 
-m1 <- mapper1D(
+m1<- mapper1D(
   distance_matrix = corr,
   filter_values = filterforfil3,
   num_intervals = intervals,
   percent_overlap = overlap,
   num_bins_when_clustering = bins)
-
 library(igraph)
 
 g1 <- graph.adjacency(m1$adjacency, mode="undirected")
@@ -114,8 +111,9 @@ print(unlist(diff_exp_clusters))
 #for each vertex get proportion diff_exp_genes
 diff_gene_nums <- lapply(diff_genes, function(gene){which(geneIds == gene)})
 getProp <- function(vert){sum(m1$points_in_vertex[[vert]] %in% diff_gene_nums)/length(m1$points_in_vertex[[vert]])}
+getNum <- function(vert){sum(m1$points_in_vertex[[vert]] %in% diff_gene_nums)}
 pct_diffexp  <- unlist(lapply(seq(from = 1, to = m1$num_vertices), getProp))
-
+num_diffexp  <- unlist(lapply(seq(from = 1, to = m1$num_vertices), getNum))
 
 #get actual gene name by geneId
 dtt<-Table(gds)
@@ -127,15 +125,9 @@ thisClustersGenes <-unlist(lapply(getGenesByCluster(1),geneIdToName))
 #for each cluster, find the genes in that cluster by name
 
 
-#are clusters different than reg k-means
-
-
 
 #plot
 plot(g1, layout = layout.auto(g1), vertex.color=colorRampPalette(c('blue', 'red'))(length(pct_diffexp))[rank(pct_diffexp)])
-
-
-
 
 #getMode
 #modeVert <-  names(sort(-table(diff_exp_vertices)))[1]
@@ -158,29 +150,23 @@ plot(g1, layout = layout.auto(g1), vertex.color=colorRampPalette(c('blue', 'red'
 
 #how do we evaluate these results?
 
-#regClust=kmeans(fil3,centers=m1$num_vertices)
-
-
 dsy <- daisy(fil3)
 hclusters<-hclust(dsy)
 clusts <- cutree(hclusters, k=m1$num_vertices)
-toClusterReg=list()
-for(i in 1:length(regClust$cluster)){
-  toClusterReg[i]=as.numeric(regClust$cluster[i])
+toClusterReg <- list()
+for(i in 1:length(clusts)){
+  toClusterReg[i]=as.numeric(clusts[i])
 }
+
 getProp_reg <- function(clusternumber){length(which(which(toClusterReg==clusternumber) %in% diff_gene_nums ))/length(which(toClusterReg==clusternumber))}
 pct_diffexp_reg  <- unlist(lapply(seq(from = 1, to = m1$num_vertices), getProp_reg))
-#second way to calc this 
-regular_clusters_diff_exp <- unlist(lapply(regularClusteredGenes, function(list){r <- unlist(lapply(list, function(x){return(x %in% diff_genes)})); return(sum(r)/length(r))}))
-#plotcluster(fil3,regClust$cluster)
-#clusplot(fil3,regClust$cluster,color=TRUE,shade=TRUE,lines=0)
+getNum_reg <- function(clusternumber){length(which(which(toClusterReg==clusternumber) %in% diff_gene_nums ))}
+num_diffexp_by_reg <-unlist(lapply(seq(from = 1, to = m1$num_vertices), getNum_reg))
 
-#what genes are in each cluster
+
+
 clusters=lapply(seq(from=1,to=m1$num_vertices),function(clusternumber){return(which(toClusterReg %in% clusternumber))})
 regularClusteredGenes <- lapply(clusters, function(list){return(unlist(lapply(list, getGeneIdByIndex)))})
-
-#regular_clusters_diff_exp <- lapply(regularClusteredGenes, function(list){return(r <- unlist(lapply(list, function(x){return(x %in% diff_genes)})); return(sum(r)/length(r)))})
-
 
 prclust=princomp(regClust$centers)
 weights=loadings(prclust)[,1:2]
@@ -222,4 +208,3 @@ plot(actual[,1:2],col=actual$color,bg=actual$color,pch=21,cex=2)
 #fisherreg[[i]]=fisher.test(x,alternative = "greater")
 #if(minreg>fisherreg[[i]]$p.value){minreg=fisherreg[[i]]$p.value}
 #}
-

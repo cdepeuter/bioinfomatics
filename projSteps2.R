@@ -63,18 +63,31 @@ overlap = 10
 intervals = 20
 bins = 20
 
+disease_state_benign=factor("benign",levels=c("benign","primary","metastatic"))
+benigndata=affy_exp[,1:6]
+benignpca=princomp(benigndata)
+weights_beningn=loadings(benignpca)[,1]
+reduced_dim_benign=benigndata %*% weights_beningn 
+design_benign=model.matrix(~disease_state_benign)
+fit_benign=lmFit(design_benign)
+coeff_benign=coefficients(fit_benign)
 
-filter=list()
-for(i in 1:nrow(fil3)){filter[[i]]=mean(corr[i,])}
-filter=unlist(filter)
+
+diseasedata=affy_exp[,7:19]
+diseasepca=princomp(diseasedata)
+weights_disease=loadings(diseasepca)[,1]
+reduced_dim_disease=diseasedata %*% weights_disease
+modeled_disease_filter=reduced_dim_disease %*% coeff_benign
+filterforfil3=modeled_disease_filter[geneIds,]
+
+
 library(TDAmapper)
-m1 <- mapper1D(
+m1<- mapper1D(
   distance_matrix = corr,
-  filter_values = filter,
+  filter_values = filterforfil3,
   num_intervals = intervals,
   percent_overlap = overlap,
   num_bins_when_clustering = bins)
-
 library(igraph)
 
 g1 <- graph.adjacency(m1$adjacency, mode="undirected")
@@ -144,11 +157,14 @@ plot(g1, layout = layout.auto(g1), vertex.color=colorRampPalette(c('blue', 'red'
 
 #how do we evaluate these results?
 
-regClust=kmeans(fil3,centers=m1$num_vertices)
-toClusterReg=list()
-for(i in 1:length(regClust$cluster)){
-  toClusterReg[i]=as.numeric(regClust$cluster[i])
+dsy <- daisy(fil3)
+hclusters<-hclust(dsy)
+clusts <- cutree(hclusters, k=m1$num_vertices)
+toClusterReg <- list()
+for(i in 1:length(clusts)){
+  toClusterReg[i]=as.numeric(clusts[i])
 }
+
 getProp_reg <- function(clusternumber){length(which(which(toClusterReg==clusternumber) %in% diff_gene_nums ))/length(which(toClusterReg==clusternumber))}
 pct_diffexp_reg  <- unlist(lapply(seq(from = 1, to = m1$num_vertices), getProp_reg))
 #plotcluster(fil3,regClust$cluster)
@@ -173,29 +189,28 @@ plot(actual[,1:2],col=actual$color,bg=actual$color,pch=21,cex=2)
 #fisher=list()
 #min=1
 #for(i in 1:length(pct_diffexp)){
-  #x[1,1]=length(which(m1$points_in_vertex[[i]] %in% diff_gene_nums))
-  #print(x[1,1])
-  #x[1,2]=length(diff_genes)-x[1,1]
-  #print(x[1,2])
-  #x[2,1]=length(m1$points_in_vertex[[i]])-x[1,1]
-  #print(x[2,1])
-  #x[2,2]=numgenes-length(diff_genes)-x[2,1]
-  #print(x[2,2])
-  #fisher[[i]]=fisher.test(x,alternative = "greater")
-  #if(min>fisher[[i]]$p.value){min=fisher[[i]]$p.value}
+#x[1,1]=length(which(m1$points_in_vertex[[i]] %in% diff_gene_nums))
+#print(x[1,1])
+#x[1,2]=length(diff_genes)-x[1,1]
+#print(x[1,2])
+#x[2,1]=length(m1$points_in_vertex[[i]])-x[1,1]
+#print(x[2,1])
+#x[2,2]=numgenes-length(diff_genes)-x[2,1]
+#print(x[2,2])
+#fisher[[i]]=fisher.test(x,alternative = "greater")
+#if(min>fisher[[i]]$p.value){min=fisher[[i]]$p.value}
 #}
 #fisherreg=list()
 #minreg=1
 #for(i in 1:length(pct_diffexp)){
-  #x[1,1]=length(which(which(toClusterReg==i) %in% diff_gene_nums ))
-  #print(x[1,1])
-  #x[1,2]=length(diff_genes)-x[1,1]
-  #print(x[1,2])
-  #x[2,1]=length(which(toClusterReg==i))-x[1,1]
-  #print(x[2,1])
-  #x[2,2]=numgenes-length(diff_genes)-x[2,1]
-  #print(x[2,2])
-  #fisherreg[[i]]=fisher.test(x,alternative = "greater")
-  #if(minreg>fisherreg[[i]]$p.value){minreg=fisherreg[[i]]$p.value}
+#x[1,1]=length(which(which(toClusterReg==i) %in% diff_gene_nums ))
+#print(x[1,1])
+#x[1,2]=length(diff_genes)-x[1,1]
+#print(x[1,2])
+#x[2,1]=length(which(toClusterReg==i))-x[1,1]
+#print(x[2,1])
+#x[2,2]=numgenes-length(diff_genes)-x[2,1]
+#print(x[2,2])
+#fisherreg[[i]]=fisher.test(x,alternative = "greater")
+#if(minreg>fisherreg[[i]]$p.value){minreg=fisherreg[[i]]$p.value}
 #}
-
