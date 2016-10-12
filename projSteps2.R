@@ -157,9 +157,10 @@ plotcluster(fil3,regClust$cluster)
 clusplot(fil3,regClust$cluster,color=TRUE,shade=TRUE,lines=0)
 
 clusters=list()
-for(i in 1:m1$num_vertices){
-  clusters[[i]]=which(toCluster %in% i)
-}
+#for(i in 1:m1$num_vertices){
+ # clusters[[i]]=which(toCluster %in% i)
+#}
+clusters=lapply(seq(from=1,to=m1$num_vertices),function(clusternumber){return(which(toClusterReg %in% clusternumber))})
 #x=matrix(nrow=2,ncol=2)
 #fisher=list()
 #min=1
