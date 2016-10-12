@@ -10,10 +10,14 @@ library(affy);
 library(limma);
 library(GEOquery);
 library(plyr);
-library(dplyr)
+library(dplyr);
+library(cluster);
+library(HSAUR);
+library(fpc);
+
 
 #is teh data normalized
-
+set.seed(21)
 gds_set_name <- "GDS1439"
 gds <- getGEO(gds_set_name);
 # Convert the downloaded dataset into an ExpressionSet object(functions you might need: "GDS2eSet")
@@ -76,7 +80,7 @@ library(igraph)
 g1 <- graph.adjacency(m1$adjacency, mode="undirected")
 
 #dnt plot yet
-plot(g1, layout = layout.auto(g1) )
+#plot(g1, layout = layout.auto(g1) )
 
 
 #so what genes end up where
@@ -139,12 +143,6 @@ plot(g1, layout = layout.auto(g1), vertex.color=colorRampPalette(c('blue', 'red'
 #use TOPAseq for some topological analysis of the pathways
 
 #how do we evaluate these results?
-install.packages("cluster")
-install.packages("HSAUR")
-install.packages("fpc")
-library(cluster)
-library(HSAUR)
-library(fpc)
 
 regClust=kmeans(fil3,centers=m1$num_vertices)
 toClusterReg=list()
@@ -153,14 +151,24 @@ for(i in 1:length(regClust$cluster)){
 }
 getProp_reg <- function(clusternumber){length(which(which(toClusterReg==clusternumber) %in% diff_gene_nums ))/length(which(toClusterReg==clusternumber))}
 pct_diffexp_reg  <- unlist(lapply(seq(from = 1, to = m1$num_vertices), getProp_reg))
-plotcluster(fil3,regClust$cluster)
-clusplot(fil3,regClust$cluster,color=TRUE,shade=TRUE,lines=0)
+#plotcluster(fil3,regClust$cluster)
+#clusplot(fil3,regClust$cluster,color=TRUE,shade=TRUE,lines=0)
 
-clusters=list()
-#for(i in 1:m1$num_vertices){
- # clusters[[i]]=which(toCluster %in% i)
-#}
+#what genes are in each cluster
 clusters=lapply(seq(from=1,to=m1$num_vertices),function(clusternumber){return(which(toClusterReg %in% clusternumber))})
+regularClusteredGenes <- lapply(clusters, function(list){return(unlist(lapply(list, getGeneIdByIndex)))})
+
+prclust=princomp(regClust$centers)
+weights=loadings(prclust)[,1:2]
+actual=regClust$centers %*% weights
+actual=data.frame(actual)
+actual$percent=pct_diffexp_reg
+actual$color[actual$percent<.3 & actual$percent>0]='red1'
+actual$color[actual$percent<.6 & actual$percent>=.3]='red2'
+actual$color[actual$percent>=.6]='red3'
+actual$color[actual$percent==0]="blue"
+plot(actual[,1:2],col=actual$color,bg=actual$color,pch=21,cex=2)
+
 #x=matrix(nrow=2,ncol=2)
 #fisher=list()
 #min=1
@@ -190,13 +198,4 @@ clusters=lapply(seq(from=1,to=m1$num_vertices),function(clusternumber){return(wh
   #fisherreg[[i]]=fisher.test(x,alternative = "greater")
   #if(minreg>fisherreg[[i]]$p.value){minreg=fisherreg[[i]]$p.value}
 #}
-prclust=princomp(regClust$centers)
-weights=loadings(prclust)[,1:2]
-actual=regClust$centers %*% weights
-actual=data.frame(actual)
-actual$percent=pct_diffexp_reg
-actual$color[actual$percent<.3 & actual$percent>0]='red1'
-actual$color[actual$percent<.6 & actual$percent>=.3]='red2'
-actual$color[actual$percent>=.6]='red3'
-actual$color[actual$percent==0]="blue"
-plot(actual[,1:2],col=actual$color,bg=actual$color,pch=21,cex=2)
+
