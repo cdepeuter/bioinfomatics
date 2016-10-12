@@ -82,7 +82,7 @@ filterforfil3=modeled_disease_filter[geneIds,]
 
 
 library(TDAmapper)
-m2<- mapper1D(
+m1<- mapper1D(
   distance_matrix = corr,
   filter_values = filterforfil3,
   num_intervals = intervals,
