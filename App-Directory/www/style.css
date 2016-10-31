@@ -2,3 +2,7 @@
 	max-width : 900px;
 	overflow : scroll;
 }
+
+.nodetext{
+	font-size:17px !important;
+}

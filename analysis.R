@@ -3,9 +3,6 @@
 # need to make sure whatever datasets we get from here have features we can look for (highly/lowly metastatic)
 #gds5437 https://www.ncbi.nlm.nih.gov/sites/GDSbrowser?acc=GDS5437
 
-#are libs loaded? if not call libs.R
-#if(!exists("foo", mode="function")) source("libs.R")
-
 
 gds_set_name <- "GDS5437"
 #gds_set_name <- "GDS1439"
@@ -33,6 +30,7 @@ bins = 12
 
 
 if(!exists("affy_exp")){
+  
   source("../loadData.R")
 }
 
@@ -44,8 +42,6 @@ design <- model.matrix(~combn);
 fit <- lmFit(affy_exp,design);
 efit <- eBayes(fit);
 
-
-#TODO should make this how many diff expressed genes do we want?
 #get differentially expressed genes
 diff_gene_table <- topTable(efit, number = max_diffexp ,p.value =  pval);
 diff_genes <- rownames(diff_gene_table)
@@ -59,6 +55,7 @@ fil3 <- unique(rbind(fil, fil2))
 geneIds <- rownames(fil3)
 
 #TODO shuffle here make sure everythings still good
+#fil3 <- fil3[sample(nrow(fil3)),]
 
 #get pairwise distance for mapper, 
 #TODO different methods for correlation/distance
@@ -77,6 +74,7 @@ corr = cor(filT,method="spearman")
 #TODO generalize disease_state_benign, benignData and diseaseData indices
 disease_state_benign = factor("benign",levels=c("benign","primary","metastatic"))
 
+allpca = princomp(affy_exp)
 
 #principal components for benign data
 benigndata = affy_exp[,gstats.healthy]
@@ -230,6 +228,33 @@ getGenesInCluster <- function(list){
   return(unlist(lapply(list, getGeneIdByIndex)))
 }
 regularClusteredGenes <- lapply(clusters, getGenesInCluster)
+
+# 
+# map<- mapper(
+#   corr,
+#   filter_values = filterforfil3,
+#   num_intervals = intervals,
+#   percent_overlap = overlap,
+#   num_bins_when_clustering = bins)
+# 
+# cluster_list_map <- seq(from = 1, to = map$num_vertices)
+# pct_diffexp_map  <- unlist(lapply(cluster_list_map, getProp))
+# num_diffexp_map  <- unlist(lapply(cluster_list_map, getNumDiff))
+# 
+# MapperNodes <- mapperVertices(map, geneIds)
+# MapperLinks <- mapperEdges(map)
+# MapperNodes$pctdiffexp <- pct_diffexp_map
+# MapperNodes$rankdiffexp <- rank(pct_diffexp_map)
+# unq <-  unique(as.integer(rank(pct_diffexp_map)))
+
+MapperNodes <- mapperVertices(m1, geneIds)
+MapperLinks <- mapperEdges(m1)
+rnk <- round(pct_diffexp*100)
+MapperNodes$pctdiffexp <- round(pct_diffexp*100)
+unq <-  unique(rnk)
+colorRampMap <- colorRampPalette(c('blue', 'red'))(length(unq))[rank(unq)]
+jsColorString <- paste(paste("[\"", paste(colorRampMap, collapse="\",\"")), "\"]")
+
 
 #USE HEAT MAP PLOT, WERE GONNA NEED LESS GENES
 

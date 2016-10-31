@@ -10,9 +10,11 @@ library(GEOquery);
 library(plyr);
 library(dplyr);
 library(cluster);
-library(HSAUR);
-library(fpc);
 library(TDAmapper);
+library(networkD3);
+library(HSAUR);
 library(shiny);
+library(scatterplot3d);
+
 
 
