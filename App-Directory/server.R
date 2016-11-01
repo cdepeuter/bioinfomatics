@@ -14,8 +14,8 @@ function(input, output) {
          vertex.color = colorRampPalette(c('blue', 'red'))(length(pct_diffexp))[rank(pct_diffexp)]
     )
   })
-  output$table <- renderTable(tbldata)
-  
+  output$hTable <- renderTable(t(htbldata))
+  output$diffExpTable <- renderTable(t(tbldata))
   # renderPlot(forceNetwork(Nodes = MapperNodes, Links = MapperLinks, 
   #                         Source = "Linksource", Target = "Linktarget",
   #                         Value = "Linkvalue", NodeID = "Nodename",

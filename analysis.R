@@ -18,8 +18,8 @@ if(gds_set_name == "GDS1439"){
 }
 
 pval <- 0.02
-max_diffexp <- 30
-samplesize <-  200
+max_diffexp <- 50
+samplesize <-  1000
 set.seed(21)
 
 #TODO better way to decide this or just add as inputs on UI
@@ -34,6 +34,8 @@ if(!exists("affy_exp")){
   source("../loadData.R")
 }
 
+#TODO check for redundant genes
+#http://www3.stat.sinica.edu.tw/statistica/oldpdf/A12n112.pdf
 
 #do regular gene expression analysis, find differentially expressed genes
 disease_state<-as.character(pData(eset)[,2])
@@ -138,7 +140,7 @@ diff_exp_vertices <- unlist(lapply(diff_genes, getVertexForGene))
 #which genes are differentially expressed by index
 diff_gene_nums <- lapply(diff_genes, function(gene){which(geneIds == gene)})
 
-getProp <- function(vert){
+getPropDiffexp <- function(vert){
   diff_expressed <- getNumDiff(vert)
   return(diff_expressed/length(m1$points_in_vertex[[vert]]))
 }
@@ -146,7 +148,7 @@ getNumDiff<- function(vert){
   return(sum(m1$points_in_vertex[[vert]] %in% diff_gene_nums))
 }
 
-pct_diffexp  <- unlist(lapply(cluster_list, getProp))
+pct_diffexp  <- unlist(lapply(cluster_list, getPropDiffexp))
 num_diffexp  <- unlist(lapply(cluster_list, getNumDiff))
 
 
@@ -171,10 +173,11 @@ getGeneNamesByCluster <-function(cluster){
 }
 
 allClustersGenes <- lapply(cluster_list, getGeneNamesByCluster)
+totalInMapperClusters <- unlist(lapply(allClustersGenes, length))
 
 #write table for UI
-tbldata <- rbind(as.integer(cluster_list), pct_diffexp, num_diffexp)
-rownames(tbldata) <- c("cluster", "% diffexp", "num_diffexp")
+tbldata <- rbind(as.integer(cluster_list), pct_diffexp, num_diffexp, totalInMapperClusters)
+rownames(tbldata) <- c("cluster", "% diffexp", "num_diffexp", "total");
 
 #getMode
 #modeVert <-  names(sort(-table(diff_exp_vertices)))[1]
@@ -207,7 +210,7 @@ getNum_reg <- function(clusternumber){
 }
 
 #proportion diffexp genes reg cluster
-getProp_reg <- function(clusternumber){
+getPropDiffexp_reg <- function(clusternumber){
   inThisCluster <- which( geneToClusterReg == clusternumber );
   whatsDiffExp <- which( inThisCluster %in% diff_gene_nums );
   return(length(whatsDiffExp)/length(inThisCluster));
@@ -215,20 +218,21 @@ getProp_reg <- function(clusternumber){
 
 
 cluster_list <- seq(from = 1, to = m1$num_vertices)
-pct_diffexp_reg  <- unlist(lapply(cluster_list, getProp_reg))
+pct_diffexp_reg  <- unlist(lapply(cluster_list, getPropDiffexp_reg))
 num_diffexp_by_reg <-unlist(lapply(cluster_list, getNum_reg))
-
+totalInCluster <- unlist(lapply(clusters, length))
 clusters <- lapply(cluster_list,
                    function(clusternumber){
                      return(which(geneToClusterReg %in% clusternumber))
                    }
-)
+            )
 
 getGenesInCluster <- function(list){
   return(unlist(lapply(list, getGeneIdByIndex)))
 }
-regularClusteredGenes <- lapply(clusters, getGenesInCluster)
 
+regularClusteredGenes <- lapply(clusters, getGenesInCluster)
+htbldata <- rbind(as.integer(cluster_list), pct_diffexp_reg, num_diffexp_by_reg, totalInCluster)
 # 
 # map<- mapper(
 #   corr,
@@ -238,7 +242,7 @@ regularClusteredGenes <- lapply(clusters, getGenesInCluster)
 #   num_bins_when_clustering = bins)
 # 
 # cluster_list_map <- seq(from = 1, to = map$num_vertices)
-# pct_diffexp_map  <- unlist(lapply(cluster_list_map, getProp))
+# pct_diffexp_map  <- unlist(lapply(cluster_list_map, getPropDiffexp))
 # num_diffexp_map  <- unlist(lapply(cluster_list_map, getNumDiff))
 # 
 # MapperNodes <- mapperVertices(map, geneIds)
@@ -252,7 +256,7 @@ MapperLinks <- mapperEdges(m1)
 rnk <- round(pct_diffexp*100)
 MapperNodes$pctdiffexp <- round(pct_diffexp*100)
 unq <-  unique(rnk)
-colorRampMap <- colorRampPalette(c('blue', 'red'))(length(unq))[rank(unq)]
+colorRampMap <- colorRampPalette(c('blue', 'red'))(max(unq))[rank(unq)]
 jsColorString <- paste(paste("[\"", paste(colorRampMap, collapse="\",\"")), "\"]")
 
 
