@@ -24,9 +24,9 @@ set.seed(21)
 
 #TODO better way to decide this or just add as inputs on UI
 #mapper inputs
-overlap = 30
-intervals = 22
-bins = 12
+overlap = 20
+intervals = 10
+bins = 40
 
 
 if(!exists("affy_exp")){
@@ -94,7 +94,7 @@ reduced_dim_disease = diseasedata %*% weights_disease
 modeled_disease_filter = reduced_dim_disease %*% coeff_benign
 filterforfil3 = modeled_disease_filter[geneIds,]
 
-m1<- mapper1D(
+m1 <- mapper1D(
   distance_matrix = corr,
   filter_values = filterforfil3,
   num_intervals = intervals,
