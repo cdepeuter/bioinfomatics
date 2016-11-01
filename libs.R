@@ -3,10 +3,13 @@
 # biocLite("limma");
 # biocLite("GEOquery");
 # biocLite("hopach")
-
+# biocLite("annotate")
+# biocLite("mygene")
 library(affy);
 library(limma);
 library(GEOquery);
+library(mygene);
+library(annotate);
 library(plyr);
 library(dplyr);
 library(cluster);
@@ -15,6 +18,7 @@ library(networkD3);
 library(HSAUR);
 library(shiny);
 library(scatterplot3d);
+
 
 
 

@@ -30,7 +30,6 @@ bins = 12
 
 
 if(!exists("affy_exp")){
-  
   source("../loadData.R")
 }
 
@@ -144,6 +143,7 @@ getPropDiffexp <- function(vert){
   diff_expressed <- getNumDiff(vert)
   return(diff_expressed/length(m1$points_in_vertex[[vert]]))
 }
+
 getNumDiff<- function(vert){
   return(sum(m1$points_in_vertex[[vert]] %in% diff_gene_nums))
 }
@@ -174,10 +174,6 @@ getGeneNamesByCluster <-function(cluster){
 
 allClustersGenes <- lapply(cluster_list, getGeneNamesByCluster)
 totalInMapperClusters <- unlist(lapply(allClustersGenes, length))
-
-#write table for UI
-tbldata <- rbind(as.integer(cluster_list), pct_diffexp, num_diffexp, totalInMapperClusters)
-rownames(tbldata) <- c("cluster", "% diffexp", "num_diffexp", "total");
 
 #getMode
 #modeVert <-  names(sort(-table(diff_exp_vertices)))[1]
@@ -231,8 +227,19 @@ getGenesInCluster <- function(list){
   return(unlist(lapply(list, getGeneIdByIndex)))
 }
 
+
+source("../geneFunctions.R")
+
+
+#write table for UI
+topFunctionString <- lapply(lapply(topFunctionsByCluster, rownames),paste, collapse=", ")
+tbldata <- rbind(as.integer(cluster_list), pct_diffexp, num_diffexp, totalInMapperClusters, topFunctionString )
+rownames(tbldata) <- c("cluster", "% diffexp", "num_diffexp", "total", "functions");
+
+
 regularClusteredGenes <- lapply(clusters, getGenesInCluster)
 htbldata <- rbind(as.integer(cluster_list), pct_diffexp_reg, num_diffexp_by_reg, totalInCluster)
+
 # 
 # map<- mapper(
 #   corr,

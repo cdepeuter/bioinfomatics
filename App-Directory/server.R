@@ -16,12 +16,7 @@ function(input, output) {
   })
   output$hTable <- renderTable(t(htbldata))
   output$diffExpTable <- renderTable(t(tbldata))
-  # renderPlot(forceNetwork(Nodes = MapperNodes, Links = MapperLinks, 
-  #                         Source = "Linksource", Target = "Linktarget",
-  #                         Value = "Linkvalue", NodeID = "Nodename",
-  #                         Group = "Nodegroup", opacity = 1, 
-  #                         linkDistance = 10, charge = -400) )
-
+  
   ColourScale <- paste(cbind('d3.scale.ordinal().range(',jsColorString,');'))
   
     output$force <- renderForceNetwork({
