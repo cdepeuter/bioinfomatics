@@ -15,16 +15,27 @@ getFunctionsFromGeneList <- function(genes, max = length(genes)){
   return(sort(table(unlist(byGenes)),decreasing=TRUE)[1:max])
 }
 
+stringifyData <- function(rw){
+  funcs <- names(rw)
+  vals <- unname(rw)
+  firstCollapse <- apply(t(rbind(funcs, vals)), 1, paste, collapse = ":")
+  return(paste(firstCollapse, collapse = ", "))
+}
+
+
 #what are the functions of the diff expressed genes
 functionDiffexpressedFrequency <- getFunctionsFromGeneList(diff_genes)
 #how many gene functions do we have
 #numFunctions <- length(unique(unlist(funcByGene)))
 
 #for mapper clusters, find their top function
-topFunctionsByCluster <- lapply(lapply(cluster_list, getGeneIdsByCluster), getFunctionsFromGeneList, 3)
+topFunctionsByCluster <- lapply(lapply(cluster_list, getGeneIdsByCluster), getFunctionsFromGeneList, 4)
 
 #functions from all genes
 allFunctions <- getFunctionsFromGeneList(geneIds)
+
+heirarchicalClusterFunctions <- lapply(regularClusteredGenes, getFunctionsFromGeneList)
+topHClusterFunctions <-  lapply(regularClusteredGenes, getFunctionsFromGeneList, 4)
 
 #Gold standard genes, going to need to map these to affymetrix ids
 #TODO office hours, talk to UN

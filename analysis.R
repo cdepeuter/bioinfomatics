@@ -4,8 +4,8 @@
 #gds5437 https://www.ncbi.nlm.nih.gov/sites/GDSbrowser?acc=GDS5437
 
 
-gds_set_name <- "GDS5437"
-#gds_set_name <- "GDS1439"
+#gds_set_name <- "GDS5437"
+gds_set_name <- "GDS1439"
 
 
 #set columns for healthy/sick data
@@ -232,13 +232,25 @@ source("../geneFunctions.R")
 
 
 #write table for UI
-topFunctionString <- lapply(lapply(topFunctionsByCluster, rownames),paste, collapse=", ")
+topFunctionString <- lapply(topFunctionsByCluster, stringifyData)
 tbldata <- rbind(as.integer(cluster_list), pct_diffexp, num_diffexp, totalInMapperClusters, topFunctionString )
 rownames(tbldata) <- c("cluster", "% diffexp", "num_diffexp", "total", "functions");
 
-
+topHClustFunctionString <- lapply(topHClusterFunctions, stringifyData)
 regularClusteredGenes <- lapply(clusters, getGenesInCluster)
-htbldata <- rbind(as.integer(cluster_list), pct_diffexp_reg, num_diffexp_by_reg, totalInCluster)
+htbldata <- rbind(as.integer(cluster_list), pct_diffexp_reg, num_diffexp_by_reg, totalInCluster, topHClustFunctionString)
+
+
+
+MapperNodes <- mapperVertices(m1, geneIds)
+MapperLinks <- mapperEdges(m1)
+rnk <- round(pct_diffexp*100)
+MapperNodes$pctdiffexp <- round(pct_diffexp*100)
+unq <-  unique(rnk)
+colorRampMap <- colorRampPalette(c('blue', 'red'))(max(unq))[rank(unq)]
+jsColorString <- paste(paste("[\"", paste(colorRampMap, collapse="\",\"")), "\"]")
+
+
 
 # 
 # map<- mapper(
@@ -258,13 +270,6 @@ htbldata <- rbind(as.integer(cluster_list), pct_diffexp_reg, num_diffexp_by_reg,
 # MapperNodes$rankdiffexp <- rank(pct_diffexp_map)
 # unq <-  unique(as.integer(rank(pct_diffexp_map)))
 
-MapperNodes <- mapperVertices(m1, geneIds)
-MapperLinks <- mapperEdges(m1)
-rnk <- round(pct_diffexp*100)
-MapperNodes$pctdiffexp <- round(pct_diffexp*100)
-unq <-  unique(rnk)
-colorRampMap <- colorRampPalette(c('blue', 'red'))(max(unq))[rank(unq)]
-jsColorString <- paste(paste("[\"", paste(colorRampMap, collapse="\",\"")), "\"]")
 
 
 #USE HEAT MAP PLOT, WERE GONNA NEED LESS GENES
