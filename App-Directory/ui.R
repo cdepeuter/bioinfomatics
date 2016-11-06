@@ -25,10 +25,32 @@ fluidPage(
                #tags$img(src = "/rplt.png")
              )
     ),
+    tabPanel("Tables",
+             mainPanel(
+               tags$div(class="infoTables",
+                 tags$div(class="diffexpInfoTable", 
+                        tableOutput('diffExpTable')
+               ),
+               tags$div(class="clusterInfoTable", 
+                        tableOutput('hTable')
+               )
+            )
+        )
+            
+    ),
     tabPanel("Hierarchical Clusters", 
              mainPanel(
                plotOutput('hclustPlot')
              )
     )
+    # tags$head(
+    #   #              tags$link(
+    #   #                rel = "stylesheet",
+    #   #                type = "text/css",
+    #   #                href = "style.css"
+    #   #              )
+    #   #            ),
+    # forceNetworkOutput("force")
+    # )
   )
 )

@@ -3,12 +3,9 @@
 # need to make sure whatever datasets we get from here have features we can look for (highly/lowly metastatic)
 #gds5437 https://www.ncbi.nlm.nih.gov/sites/GDSbrowser?acc=GDS5437
 
-#are libs loaded? if not call libs.R
-#if(!exists("foo", mode="function")) source("libs.R")
 
-
-gds_set_name <- "GDS5437"
-#gds_set_name <- "GDS1439"
+#gds_set_name <- "GDS5437"
+gds_set_name <- "GDS1439"
 
 
 #set columns for healthy/sick data
@@ -21,21 +18,23 @@ if(gds_set_name == "GDS1439"){
 }
 
 pval <- 0.02
-max_diffexp <- 30
-samplesize <-  200
+max_diffexp <- 50
+samplesize <-  1000
 set.seed(21)
 
 #TODO better way to decide this or just add as inputs on UI
 #mapper inputs
-overlap = 30
-intervals = 22
-bins = 12
+overlap = 20
+intervals = 10
+bins = 40
 
 
 if(!exists("affy_exp")){
   source("../loadData.R")
 }
 
+#TODO check for redundant genes
+#http://www3.stat.sinica.edu.tw/statistica/oldpdf/A12n112.pdf
 
 #do regular gene expression analysis, find differentially expressed genes
 disease_state<-as.character(pData(eset)[,2])
@@ -44,8 +43,6 @@ design <- model.matrix(~combn);
 fit <- lmFit(affy_exp,design);
 efit <- eBayes(fit);
 
-
-#TODO should make this how many diff expressed genes do we want?
 #get differentially expressed genes
 diff_gene_table <- topTable(efit, number = max_diffexp ,p.value =  pval);
 diff_genes <- rownames(diff_gene_table)
@@ -59,6 +56,7 @@ fil3 <- unique(rbind(fil, fil2))
 geneIds <- rownames(fil3)
 
 #TODO shuffle here make sure everythings still good
+#fil3 <- fil3[sample(nrow(fil3)),]
 
 #get pairwise distance for mapper, 
 #TODO different methods for correlation/distance
@@ -77,6 +75,7 @@ corr = cor(filT,method="spearman")
 #TODO generalize disease_state_benign, benignData and diseaseData indices
 disease_state_benign = factor("benign",levels=c("benign","primary","metastatic"))
 
+allpca = princomp(affy_exp)
 
 #principal components for benign data
 benigndata = affy_exp[,gstats.healthy]
@@ -95,7 +94,7 @@ reduced_dim_disease = diseasedata %*% weights_disease
 modeled_disease_filter = reduced_dim_disease %*% coeff_benign
 filterforfil3 = modeled_disease_filter[geneIds,]
 
-m1<- mapper1D(
+m1 <- mapper1D(
   distance_matrix = corr,
   filter_values = filterforfil3,
   num_intervals = intervals,
@@ -140,15 +139,16 @@ diff_exp_vertices <- unlist(lapply(diff_genes, getVertexForGene))
 #which genes are differentially expressed by index
 diff_gene_nums <- lapply(diff_genes, function(gene){which(geneIds == gene)})
 
-getProp <- function(vert){
+getPropDiffexp <- function(vert){
   diff_expressed <- getNumDiff(vert)
   return(diff_expressed/length(m1$points_in_vertex[[vert]]))
 }
+
 getNumDiff<- function(vert){
   return(sum(m1$points_in_vertex[[vert]] %in% diff_gene_nums))
 }
 
-pct_diffexp  <- unlist(lapply(cluster_list, getProp))
+pct_diffexp  <- unlist(lapply(cluster_list, getPropDiffexp))
 num_diffexp  <- unlist(lapply(cluster_list, getNumDiff))
 
 
@@ -175,10 +175,7 @@ getGeneNamesByCluster <-function(cluster){
 }
 
 allClustersGenes <- lapply(cluster_list, getGeneNamesByCluster)
-
-#write table for UI
-tbldata <- rbind(as.integer(cluster_list), pct_diffexp, num_diffexp)
-rownames(tbldata) <- c("cluster", "% diffexp", "num_diffexp")
+totalInMapperClusters <- unlist(lapply(allClustersGenes, length))
 
 #getMode
 #modeVert <-  names(sort(-table(diff_exp_vertices)))[1]
@@ -210,7 +207,7 @@ getNum_reg <- function(clusternumber){
 }
 
 #proportion diffexp genes reg cluster
-getProp_reg <- function(clusternumber){
+getPropDiffexp_reg <- function(clusternumber){
   inThisCluster <- which( geneToClusterReg == clusternumber );
   whatsDiffExp <- which( inThisCluster %in% diff_gene_nums );
   return(length(whatsDiffExp)/length(inThisCluster));
@@ -218,19 +215,63 @@ getProp_reg <- function(clusternumber){
 
 
 cluster_list <- seq(from = 1, to = m1$num_vertices)
-pct_diffexp_reg  <- unlist(lapply(cluster_list, getProp_reg))
+pct_diffexp_reg  <- unlist(lapply(cluster_list, getPropDiffexp_reg))
 num_diffexp_by_reg <-unlist(lapply(cluster_list, getNum_reg))
-
+totalInCluster <- unlist(lapply(clusters, length))
 clusters <- lapply(cluster_list,
                    function(clusternumber){
                      return(which(geneToClusterReg %in% clusternumber))
                    }
-)
+            )
 
 getGenesInCluster <- function(list){
   return(unlist(lapply(list, getGeneIdByIndex)))
 }
+
+
+source("../geneFunctions.R")
+
+
+#write table for UI
+topFunctionString <- lapply(topFunctionsByCluster, stringifyData)
+tbldata <- rbind(as.integer(cluster_list), pct_diffexp, num_diffexp, totalInMapperClusters, topFunctionString )
+rownames(tbldata) <- c("cluster", "% diffexp", "num_diffexp", "total", "functions");
+
+topHClustFunctionString <- lapply(topHClusterFunctions, stringifyData)
 regularClusteredGenes <- lapply(clusters, getGenesInCluster)
+htbldata <- rbind(as.integer(cluster_list), pct_diffexp_reg, num_diffexp_by_reg, totalInCluster, topHClustFunctionString)
+
+
+
+MapperNodes <- mapperVertices(m1, geneIds)
+MapperLinks <- mapperEdges(m1)
+rnk <- round(pct_diffexp*100)
+MapperNodes$pctdiffexp <- round(pct_diffexp*100)
+unq <-  unique(rnk)
+colorRampMap <- colorRampPalette(c('blue', 'red'))(max(unq))[rank(unq)]
+jsColorString <- paste(paste("[\"", paste(colorRampMap, collapse="\",\"")), "\"]")
+
+
+
+# 
+# map<- mapper(
+#   corr,
+#   filter_values = filterforfil3,
+#   num_intervals = intervals,
+#   percent_overlap = overlap,
+#   num_bins_when_clustering = bins)
+# 
+# cluster_list_map <- seq(from = 1, to = map$num_vertices)
+# pct_diffexp_map  <- unlist(lapply(cluster_list_map, getPropDiffexp))
+# num_diffexp_map  <- unlist(lapply(cluster_list_map, getNumDiff))
+# 
+# MapperNodes <- mapperVertices(map, geneIds)
+# MapperLinks <- mapperEdges(map)
+# MapperNodes$pctdiffexp <- pct_diffexp_map
+# MapperNodes$rankdiffexp <- rank(pct_diffexp_map)
+# unq <-  unique(as.integer(rank(pct_diffexp_map)))
+
+
 
 #USE HEAT MAP PLOT, WERE GONNA NEED LESS GENES
 
