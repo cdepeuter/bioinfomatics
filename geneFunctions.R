@@ -46,8 +46,13 @@ goldStandardProstateCancer <- c('AR', 'BRCA1', 'BRCA2', 'CD82', 'CDH1', 'CHEK2',
                                 'HNF1B', 'HOXB13', 'HPCX', 'IGF2', 'ITGA6', 'KLF6', 'LRP2', 'MAD1L1', 'MED12', 'MSMB', 'MSR1', 'MXI1', 'NBN', 'PCAP', 
                                 'PCNT', 'PLXNB1', 'PTEN', 'RNASEL', 'SRD5A2', 'STAT3', 'TGFBR1', 'WRN', 'WT1', 'ZFHX3')
 
-#breastQuery <- queryMany(goldStandardBreastCancer, scopes="symbol", fields=c("uniprot", "ensembl.gene", "reporter"), species="human")
-#prostateQuery <- queryMany(goldStandardProstateCancer, scopes="symbol", fields=c("uniprot", "ensembl.gene", "reporter"), species="human")'
+
+
+breastQuery <- queryMany(goldStandardBreastCancer, scopes="symbol", fields=c("uniprot", "ensembl.gene", "reporter"), species="human")
+prostateQuery <- queryMany(goldStandardProstateCancer, scopes="symbol", fields=c("uniprot", "ensembl.gene", "reporter"), species="human")'
+
+
+
 
 #why do these queries cme back with some info #### when done in batches but not one at a time
 # 

@@ -18,8 +18,8 @@ if(gds_set_name == "GDS1439"){
 }
 
 pval <- 0.02
-max_diffexp <- 50
-samplesize <-  1000
+max_diffexp <- 75
+samplesize <-  1250
 set.seed(21)
 
 #TODO better way to decide this or just add as inputs on UI
