@@ -164,10 +164,12 @@ refToId <- data.frame(as.character(dtt$IDENTIFIER))
 rownames(refToId) <- as.character(dtt$ID_REF)
 geneIdToName <- function(id){return(as.character(refToId[id, 1]))}
 getGeneIdByIndex <- function(indx){return(geneIds[indx])}
+getindexofgene<- function(geneinput){return(which(geneIds==geneinput))}
 getGeneIdsByCluster <- function(cluster){
   genes <- lapply(m1$points_in_vertex[[cluster]], getGeneIdByIndex);
   return(unlist(genes))
 }
+
 getGeneNamesByCluster <-function(cluster){
   return(unlist(lapply(getGeneIdsByCluster(cluster),geneIdToName)))
 }
@@ -193,7 +195,6 @@ hclusters <- hclust(dsy)
 dend <- as.dendrogram(hclusters)
 #cut tree where clusters = num verticies for mapper
 clusts <- cutree(hclusters, k=m1$num_vertices)
-
 geneToClusterReg <- list()
 for(i in 1:length(clusts)){
   geneToClusterReg[i] = as.numeric(clusts[i])
@@ -295,4 +296,24 @@ jsColorString <- paste(paste("[\"", paste(colorRampMap, collapse="\",\"")), "\"]
 #use TOPAseq for some topological analysis of the pathways
 
 #how do we evaluate these results?
+#BHI starts here
+source("https://bioconductor.org/biocLite.R")
+biocLite("annotate")
+biocLite("GO.db")
+biocLite("moe430a.db")
+library(annotate)
+library(moe430a.db)
+library(GO.db)
 
+Genebelongstocluster <-vector()
+for(i in 1:m1$num_vertices){
+  for(j in 1:length(m1$points_in_vertex[[i]])){
+    Genebelongstocluster=c(Genebelongstocluster,i)
+  }
+}
+names(Genebelongstocluster)=names(unlist(allClustersGenes))
+if(require("Biobase") && require("annotate") && require("GO.db") &&
+   require("moe430a.db")) {
+  bhiofmapper=BHI(Genebelongstocluster, annotation="moe430a.db", names=names(Genebelongstocluster), category="all")
+}
+bhiclusts= BHI(clusts,annotation="moe430a.db",names=names(clusts),category = "all")
