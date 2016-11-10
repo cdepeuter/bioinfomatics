@@ -5,6 +5,9 @@
 # biocLite("hopach")
 # biocLite("annotate")
 # biocLite("mygene")
+biocLite("annotate")
+# biocLite("GO.db")
+biocLite("moe430a.db")
 library(affy);
 library(limma);
 library(GEOquery);
@@ -18,7 +21,11 @@ library(networkD3);
 library(HSAUR);
 library(shiny);
 library(scatterplot3d);
-
+library(annotate)
+library(moe430a.db)
+library(GO.db)
+library(Biobase)
+library(clValid)
 
 
 

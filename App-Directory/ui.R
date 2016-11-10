@@ -18,8 +18,8 @@ fluidPage(
              # ),
              mainPanel(
                plotOutput('mapperPlot'),
-               tags$div(class="clusterInfoTable", 
-                    tableOutput('table')
+               tags$div(class="bhiResults", 
+                        tableOutput('bhiTable')
                )
   
                #tags$img(src = "/rplt.png")

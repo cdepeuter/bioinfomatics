@@ -48,13 +48,32 @@ goldStandardProstateCancer <- c('AR', 'BRCA1', 'BRCA2', 'CD82', 'CDH1', 'CHEK2',
 
 
 
-breastQuery <- queryMany(goldStandardBreastCancer, scopes="symbol", fields=c("uniprot", "ensembl.gene", "reporter"), species="human")
-prostateQuery <- queryMany(goldStandardProstateCancer, scopes="symbol", fields=c("uniprot", "ensembl.gene", "reporter"), species="human")'
+#write table for UI
+topFunctionString <- lapply(topFunctionsByCluster, stringifyData)
+tbldata <- rbind(as.integer(cluster_list), pct_diffexp, num_diffexp, totalInMapperClusters, topFunctionString )
+rownames(tbldata) <- c("cluster", "% diffexp", "num_diffexp", "total", "functions");
+
+topHClustFunctionString <- lapply(topHClusterFunctions, stringifyData)
+
+htbldata <- rbind(as.integer(cluster_list), pct_diffexp_reg, num_diffexp_by_reg, totalInCluster, topHClustFunctionString)
 
 
 
+MapperNodes <- mapperVertices(m1, geneIds)
+MapperLinks <- mapperEdges(m1)
+rnk <- round(pct_diffexp*100)
+MapperNodes$pctdiffexp <- round(pct_diffexp*100)
+unq <-  unique(rnk)
+colorRampMap <- colorRampPalette(c('blue', 'red'))(max(unq))[rank(unq)]
+jsColorString <- paste(paste("[\"", paste(colorRampMap, collapse="\",\"")), "\"]")
 
-#why do these queries cme back with some info #### when done in batches but not one at a time
+# 
+# breastQuery <- queryMany(goldStandardBreastCancer, scopes="symbol", fields=c("uniprot", "ensembl.gene", "reporter"), species="human")
+# prostateQuery <- queryMany(goldStandardProstateCancer, scopes="symbol", fields=c("uniprot", "ensembl.gene", "reporter"), species="human")'
+# 
+# 
+# 
+# why do these queries cme back with some info #### when done in batches but not one at a time
 # 
 # thisGene <- featureData[1, "Gene ID"]
 # geneSearch <- getGene(thisGene)

@@ -2,10 +2,11 @@
 #https://www.ncbi.nlm.nih.gov/gds/?term=metastatic
 # need to make sure whatever datasets we get from here have features we can look for (highly/lowly metastatic)
 #gds5437 https://www.ncbi.nlm.nih.gov/sites/GDSbrowser?acc=GDS5437
+setwd("~/Documents/columbia/bioinformatics/project/App-Directory")
 
 
-#gds_set_name <- "GDS5437"
-gds_set_name <- "GDS1439"
+gds_set_name <- "GDS5437"
+#gds_set_name <- "GDS1439"
 
 
 #set columns for healthy/sick data
@@ -18,19 +19,19 @@ if(gds_set_name == "GDS1439"){
 }
 
 pval <- 0.02
-max_diffexp <- 75
-samplesize <-  1250
-set.seed(21)
+max_diffexp <- 100
+samplesize <-  1500
+set.seed(3)
 
 #TODO better way to decide this or just add as inputs on UI
 #mapper inputs
-overlap = 20
-intervals = 10
-bins = 40
+overlap = 12
+intervals = 40
+bins = 15
 
 
 if(!exists("affy_exp")){
-  source("../loadData.R")
+  source("./loadData.R")
 }
 
 #TODO check for redundant genes
@@ -228,28 +229,23 @@ getGenesInCluster <- function(list){
   return(unlist(lapply(list, getGeneIdByIndex)))
 }
 
-
-source("../geneFunctions.R")
-
-
-#write table for UI
-topFunctionString <- lapply(topFunctionsByCluster, stringifyData)
-tbldata <- rbind(as.integer(cluster_list), pct_diffexp, num_diffexp, totalInMapperClusters, topFunctionString )
-rownames(tbldata) <- c("cluster", "% diffexp", "num_diffexp", "total", "functions");
-
-topHClustFunctionString <- lapply(topHClusterFunctions, stringifyData)
 regularClusteredGenes <- lapply(clusters, getGenesInCluster)
-htbldata <- rbind(as.integer(cluster_list), pct_diffexp_reg, num_diffexp_by_reg, totalInCluster, topHClustFunctionString)
+source("./geneFunctions.R")
 
 
+Genebelongstocluster <- vector()
+for(i in 1:m1$num_vertices){
+  for(j in 1:length(m1$points_in_vertex[[i]])){
+    Genebelongstocluster = c(Genebelongstocluster,i)
+  }
+}
 
-MapperNodes <- mapperVertices(m1, geneIds)
-MapperLinks <- mapperEdges(m1)
-rnk <- round(pct_diffexp*100)
-MapperNodes$pctdiffexp <- round(pct_diffexp*100)
-unq <-  unique(rnk)
-colorRampMap <- colorRampPalette(c('blue', 'red'))(max(unq))[rank(unq)]
-jsColorString <- paste(paste("[\"", paste(colorRampMap, collapse="\",\"")), "\"]")
+#do kmeans clustering
+source("./kmeans.R")
+
+
+#do BHI evaluation
+source("./BHIcomparison.R")
 
 
 
@@ -295,25 +291,3 @@ jsColorString <- paste(paste("[\"", paste(colorRampMap, collapse="\",\"")), "\"]
 
 #use TOPAseq for some topological analysis of the pathways
 
-#how do we evaluate these results?
-#BHI starts here
-source("https://bioconductor.org/biocLite.R")
-biocLite("annotate")
-biocLite("GO.db")
-biocLite("moe430a.db")
-library(annotate)
-library(moe430a.db)
-library(GO.db)
-
-Genebelongstocluster <-vector()
-for(i in 1:m1$num_vertices){
-  for(j in 1:length(m1$points_in_vertex[[i]])){
-    Genebelongstocluster=c(Genebelongstocluster,i)
-  }
-}
-names(Genebelongstocluster)=names(unlist(allClustersGenes))
-if(require("Biobase") && require("annotate") && require("GO.db") &&
-   require("moe430a.db")) {
-  bhiofmapper=BHI(Genebelongstocluster, annotation="moe430a.db", names=names(Genebelongstocluster), category="all")
-}
-bhiclusts= BHI(clusts,annotation="moe430a.db",names=names(clusts),category = "all")

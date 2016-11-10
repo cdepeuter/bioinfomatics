@@ -1,5 +1,5 @@
 function(input, output) {
-  source("../analysis.R")
+  source("./analysis.R")
   
   # data <- eventReactive(input$go, {
   #   rnorm(input$num)
@@ -14,8 +14,11 @@ function(input, output) {
          vertex.color = colorRampPalette(c('blue', 'red'))(length(pct_diffexp))[rank(pct_diffexp)]
     )
   })
+  
   output$hTable <- renderTable(t(htbldata))
   output$diffExpTable <- renderTable(t(tbldata))
+  output$bhiTable <- renderTable(as.table(bhis), digits=4, colnames = FALSE)
+  
   
   ColourScale <- paste(cbind('d3.scale.ordinal().range(',jsColorString,');'))
   
