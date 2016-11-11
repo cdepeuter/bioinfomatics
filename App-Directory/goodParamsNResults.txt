@@ -16,20 +16,6 @@ K-means	0.1806
 
 -------------------------
 
-pval <- 0.02
-max_diffexp <- 100
-samplesize <-  1500
-set.seed(2)
-#mapper inputs
-overlap = 15
-intervals = 40
-bins = 15
-
-MAPPER	0.2967
-H-Clust	0.2562
-K-means	0.1354
-
----------------------
 
 pval <- 0.02
 max_diffexp <- 100
@@ -45,3 +31,22 @@ bins = 15
 MAPPER	0.2967
 H-Clust	0.2562
 K-means	0.1354
+
+
+------------------
+
+pval <- 0.02
+max_diffexp <- 100
+samplesize <-  1500
+set.seed(3)
+
+#TODO better way to decide this or just add as inputs on UI
+#mapper inputs
+overlap = 12
+intervals = 40
+bins = 15
+
+
+MAPPER	0.3296
+H-Clust	0.1815
+K-means	0.1500

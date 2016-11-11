@@ -10,3 +10,7 @@
 .diffexpInfoTable, .clusterInfoTable{
 	float : left;
 }
+
+.col-sm-4.well{
+	width : 300px;
+}

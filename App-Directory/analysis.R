@@ -34,6 +34,8 @@ if(!exists("affy_exp")){
   source("./loadData.R")
 }
 
+#TODO filter out genes whos expression does not change across samples
+
 #TODO check for redundant genes
 #http://www3.stat.sinica.edu.tw/statistica/oldpdf/A12n112.pdf
 
@@ -64,7 +66,9 @@ geneIds <- rownames(fil3)
 count=0
 degpos = list()
 filT = t(fil3)
-corr = cor(filT,method="spearman")
+
+#corr = cor(filT,method="spearman")
+corr = cor(filT,method="pearson")
 
 #doesnt look like these are being used
 #for(i in 1:length(corr[,1])){if(rownames(corr)[i] %in% diff_genes){degpos[count]=i;count=count+1}}
@@ -166,13 +170,16 @@ rownames(refToId) <- as.character(dtt$ID_REF)
 geneIdToName <- function(id){return(as.character(refToId[id, 1]))}
 getGeneIdByIndex <- function(indx){return(geneIds[indx])}
 getindexofgene<- function(geneinput){return(which(geneIds==geneinput))}
-getGeneIdsByCluster <- function(cluster){
+getGeneIdsByMapperCluster <- function(cluster, justDiffexp = FALSE){
   genes <- lapply(m1$points_in_vertex[[cluster]], getGeneIdByIndex);
+  if(justDiffexp){
+    genes <- genes[unlist(genes) %in% diff_genes]
+  }
   return(unlist(genes))
 }
 
 getGeneNamesByCluster <-function(cluster){
-  return(unlist(lapply(getGeneIdsByCluster(cluster),geneIdToName)))
+  return(unlist(lapply(getGeneIdsByMapperCluster(cluster),geneIdToName)))
 }
 
 allClustersGenes <- lapply(cluster_list, getGeneNamesByCluster)
@@ -225,11 +232,17 @@ clusters <- lapply(cluster_list,
                    }
             )
 
-getGenesInCluster <- function(list){
-  return(unlist(lapply(list, getGeneIdByIndex)))
+getGenesInCluster <- function(list, justDiffexp = FALSE){
+  genes <- unlist(lapply(list, getGeneIdByIndex))
+  if(justDiffexp){
+    genes <- genes[unlist(genes) %in% diff_genes]
+  }
+  return(genes)
 }
 
 regularClusteredGenes <- lapply(clusters, getGenesInCluster)
+regularClusteredGenesDiffexp <- lapply(clusters, getGenesInCluster, justDiffexp = TRUE)
+#do gene function analysis
 source("./geneFunctions.R")
 
 
