@@ -1,3 +1,5 @@
 /TDAmapper/*
 *.RData
 *.Rhistory
+App-Directory/.Rhistory
+writeups/
