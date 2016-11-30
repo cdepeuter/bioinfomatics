@@ -1,22 +1,25 @@
-#source("https://bioconductor.org/biocLite.R"); ## try http:// if https:// URLs are not supported
-# biocLite("affy");
-# biocLite("limma");
-# biocLite("GEOquery");
-# biocLite("hopach")
-# biocLite("annotate")
-# biocLite("mygene")
-#biocLite("annotate")
-# biocLite("GO.db")
-#biocLite("moe430a.db")
-#biocLite("hgu133a.db")
+source("https://bioconductor.org/biocLite.R"); ## try http:// if https:// URLs are not supported
+biocLite("affy");
+biocLite("limma");
+biocLite("clValid")
+biocLite("hopach")
+biocLite("annotate")
+biocLite("mygene")
+biocLite("annotate")
+biocLite("GO.db")
+biocLite("moe430a.db")
+biocLite("hgu133a.db")
+
+#use unstable TDAMapper for up to date functions
+#use proxy for ubuntu bug https://github.com/hadley/devtools/issues/877
+#with_config(use_proxy("97.77.104.22", 3128), devtools::install_github("paultpearson/TDAmapper"))
 
 library(affy);
 library(limma);
 library(GEOquery);
 library(mygene);
 library(annotate);
-library(plyr);
-library(dplyr);
+library(tidyverse);
 library(cluster);
 library(TDAmapper);
 library(networkD3);

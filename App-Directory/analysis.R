@@ -25,7 +25,7 @@ set.seed(3)
 
 #TODO better way to decide this or just add as inputs on UI
 #mapper inputs
-if(!gridSearch || !exists("gridSearch")){
+if(!exists("gridSearch") || !gridSearch ){
   overlap = 12
   intervals = 40
   bins = 15
@@ -102,7 +102,7 @@ modeled_disease_filter = reduced_dim_disease %*% coeff_benign
 filterforfil3 = modeled_disease_filter[geneIds,]
 
 
-print(paste("From analysis.R, Doing mapper analysis with (soverlap, intervals, bins)", toString(o), toString(i), toString(b), sep="-"))
+
 m1 <- mapper1D(
   distance_matrix = corr,
   filter_values = filterforfil3,
@@ -199,10 +199,10 @@ dsy <- daisy(fil3)
 hclusters <- hclust(dsy)
 dend <- as.dendrogram(hclusters)
 #cut tree where clusters = num verticies for mapper
-clusts <- cutree(hclusters, k=m1$num_vertices)
+hclusters.clusts <- cutree(hclusters, k=m1$num_vertices)
 geneToClusterReg <- list()
-for(i in 1:length(clusts)){
-  geneToClusterReg[i] = as.numeric(clusts[i])
+for(i in 1:length(hclusters.clusts)){
+  geneToClusterReg[i] = as.numeric(hclusters.clusts[i])
 }
 
 #number of diffexp genes in regular cluster
