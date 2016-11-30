@@ -2,7 +2,7 @@
 #https://www.ncbi.nlm.nih.gov/gds/?term=metastatic
 # need to make sure whatever datasets we get from here have features we can look for (highly/lowly metastatic)
 #gds5437 https://www.ncbi.nlm.nih.gov/sites/GDSbrowser?acc=GDS5437
-setwd("~/Documents/columbia/bioinformatics/project/App-Directory")
+#setwd("~/Documents/columbia/bioinformatics/project/App-Directory")
 
 
 gds_set_name <- "GDS5437"
@@ -25,9 +25,12 @@ set.seed(3)
 
 #TODO better way to decide this or just add as inputs on UI
 #mapper inputs
-overlap = 12
-intervals = 40
-bins = 15
+if(!gridSearch || !exists("gridSearch")){
+  overlap = 12
+  intervals = 40
+  bins = 15
+}
+
 
 
 if(!exists("affy_exp")){
@@ -58,38 +61,37 @@ fil2<-affy_exp[sample(nrow(affy_exp),samplesize),]
 fil3 <- unique(rbind(fil, fil2))
 geneIds <- rownames(fil3)
 
-#TODO shuffle here make sure everythings still good
-#fil3 <- fil3[sample(nrow(fil3)),]
 
 #get pairwise distance for mapper, 
-#TODO different methods for correlation/distance
+
 count=0
-degpos = list()
+
 filT = t(fil3)
 
 #corr = cor(filT,method="spearman")
+#TODO test different methods for correlation/distance
 corr = cor(filT,method="pearson")
 
 #doesnt look like these are being used
+#degpos = list()
 #for(i in 1:length(corr[,1])){if(rownames(corr)[i] %in% diff_genes){degpos[count]=i;count=count+1}}
 #degpos=unlist(degpos)
 
 #do mapper, what clusters do the differentially expressed genes end up in
 
 #filter function for mapper
-#TODO generalize disease_state_benign, benignData and diseaseData indices
-disease_state_benign = factor("benign",levels=c("benign","primary","metastatic"))
+benign.disease_state = factor("benign",levels=c("benign","primary","metastatic"))
 
 allpca = princomp(affy_exp)
 
 #principal components for benign data
-benigndata = affy_exp[,gstats.healthy]
-benignpca = princomp(benigndata)
-weights_beningn = loadings(benignpca)[,1]
-reduced_dim_benign = benigndata %*% weights_beningn 
-design_benign = model.matrix(~disease_state_benign)
-fit_benign = lmFit(design_benign)
-coeff_benign = coefficients(fit_benign)
+benign.data = affy_exp[,gstats.healthy]
+benign.pca = princomp(benign.data)
+benign.weights = loadings(benign.pca)[,1]
+reduced_dim_benign = benign.data %*% benign.weights
+benign.design = model.matrix(~benign.disease_state)
+benign.fit = lmFit(benign.design)
+coeff_benign = coefficients(benign.fit)
 
 #principal component analysis for disease data
 diseasedata = affy_exp[,gstats.sick]
@@ -99,6 +101,8 @@ reduced_dim_disease = diseasedata %*% weights_disease
 modeled_disease_filter = reduced_dim_disease %*% coeff_benign
 filterforfil3 = modeled_disease_filter[geneIds,]
 
+
+print(paste("From analysis.R, Doing mapper analysis with (soverlap, intervals, bins)", toString(o), toString(i), toString(b), sep="-"))
 m1 <- mapper1D(
   distance_matrix = corr,
   filter_values = filterforfil3,
@@ -106,7 +110,6 @@ m1 <- mapper1D(
   percent_overlap = overlap,
   num_bins_when_clustering = bins)
 
-library(igraph)
 g1 <- graph.adjacency(m1$adjacency, mode="undirected")
 
 cluster_list <- seq(from = 1, to = m1$num_vertices)
@@ -155,13 +158,7 @@ getNumDiff<- function(vert){
 
 pct_diffexp  <- unlist(lapply(cluster_list, getPropDiffexp))
 num_diffexp  <- unlist(lapply(cluster_list, getNumDiff))
-
-
-#now that we got vertex % plot
-# plot(g1, layout = layout.auto(g1), 
-#      vertex.color = colorRampPalette(c('blue', 'red'))(length(pct_diffexp))[rank(pct_diffexp)]
-# )
-
+ 
 
 #get actual gene name by geneId, get that by cluster
 dtt <- Table(gds)
@@ -240,8 +237,8 @@ getGenesInCluster <- function(list, justDiffexp = FALSE){
   return(genes)
 }
 
-regularClusteredGenes <- lapply(clusters, getGenesInCluster)
-regularClusteredGenesDiffexp <- lapply(clusters, getGenesInCluster, justDiffexp = TRUE)
+hclusters.regularClusteredGenes <- lapply(clusters, getGenesInCluster)
+hclusters.regularClusteredGenesDiffexp <- lapply(clusters, getGenesInCluster, justDiffexp = TRUE)
 #do gene function analysis
 source("./geneFunctions.R")
 
@@ -259,48 +256,4 @@ source("./kmeans.R")
 
 #do BHI evaluation
 source("./BHIcomparison.R")
-
-
-
-# 
-# map<- mapper(
-#   corr,
-#   filter_values = filterforfil3,
-#   num_intervals = intervals,
-#   percent_overlap = overlap,
-#   num_bins_when_clustering = bins)
-# 
-# cluster_list_map <- seq(from = 1, to = map$num_vertices)
-# pct_diffexp_map  <- unlist(lapply(cluster_list_map, getPropDiffexp))
-# num_diffexp_map  <- unlist(lapply(cluster_list_map, getNumDiff))
-# 
-# MapperNodes <- mapperVertices(map, geneIds)
-# MapperLinks <- mapperEdges(map)
-# MapperNodes$pctdiffexp <- pct_diffexp_map
-# MapperNodes$rankdiffexp <- rank(pct_diffexp_map)
-# unq <-  unique(as.integer(rank(pct_diffexp_map)))
-
-
-
-#USE HEAT MAP PLOT, WERE GONNA NEED LESS GENES
-
-
-# 
-# #this was shitty kmeans plot
-# prclust = princomp(regClust$centers)
-# weights = loadings(prclust)[,1:2]
-# actual = regClust$centers %*% weights
-# actual = data.frame(actual)
-# actual$percent = pct_diffexp_reg
-# actual$color[actual$percent <.3 & actual$percent > 0]='red1'
-# actual$color[actual$percent <.6 & actual$percent >= .3]='red2'
-# actual$color[actual$percent>=.6]='red3'
-# actual$color[actual$percent==0]="blue"
-# plot(actual[,1:2],col=actual$color,bg=actual$color,pch=21,cex=2)
-
-
-#look at the pathways of the important genes
-#can we make any insight from those
-
-#use TOPAseq for some topological analysis of the pathways
 

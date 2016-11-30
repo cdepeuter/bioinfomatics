@@ -16,8 +16,8 @@ function(input, output) {
     )
   })
   
-  output$hTable <- renderTable(t(htbldata))
-  output$diffExpTable <- renderTable(t(tbldata))
+  output$hTable <- renderTable(t(hclusters.tableData))
+  output$diffExpTable <- renderTable(t(m1.tableData))
   output$bhiTable <- renderTable(as.table(bhis), digits=4, colnames = FALSE)
   
   

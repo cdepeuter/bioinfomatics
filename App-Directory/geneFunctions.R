@@ -29,28 +29,30 @@ functionDiffexpressedFrequency <- getFunctionsFromGeneList(diff_genes)
 #numFunctions <- length(unique(unlist(funcByGene)))
 
 #for mapper clusters, find their top function
-topFunctionsByCluster <- lapply(lapply(cluster_list, getGeneIdsByMapperCluster), getFunctionsFromGeneList, 4)
-topDiffexpFunctionsByCluster <- lapply(lapply(cluster_list, getGeneIdsByMapperCluster, justDiffexp=TRUE), getFunctionsFromGeneList, 10)
+m1.clusterFunctions <- lapply(lapply(cluster_list, getGeneIdsByMapperCluster), getFunctionsFromGeneList)
+m1.topFunctionsByCluster <- lapply(lapply(cluster_list, getGeneIdsByMapperCluster), getFunctionsFromGeneList, 4)
+m1.topDiffexpFunctionsByCluster <- lapply(lapply(cluster_list, getGeneIdsByMapperCluster, justDiffexp=TRUE), getFunctionsFromGeneList, 10)
 
 
 
 #functions from all genes
 allFunctions <- getFunctionsFromGeneList(geneIds)
+allFunctions.total <- sum(allFunctions[complete.cases(allFunctions)])
 
-heirarchicalClusterFunctions <- lapply(regularClusteredGenes, getFunctionsFromGeneList)
-topHClusterFunctions <-  lapply(regularClusteredGenes, getFunctionsFromGeneList, 4)
-topHClusterDiffexpFunctions <- lapply(regularClusteredGenesDiffexp, getFunctionsFromGeneList, 10)
+hclusters.clusterFunctions <- lapply(hclusters.regularClusteredGenes, getFunctionsFromGeneList)
+hclusters.topHClusterFunctions <-  lapply(hclusters.regularClusteredGenes, getFunctionsFromGeneList, 4)
+hclusters.topHClusterDiffexpFunctions <- lapply(hclusters.regularClusteredGenesDiffexp, getFunctionsFromGeneList, 10)
 #Gold standard genes, going to need to map these to affymetrix ids
 
 #write table for UI
-topFunctionString <- lapply(topFunctionsByCluster, stringifyData)
-topDiffexpFunctionString <- lapply(topDiffexpFunctionsByCluster, stringifyData)
-tbldata <- rbind(as.integer(cluster_list), pct_diffexp, num_diffexp, totalInMapperClusters, topFunctionString, topDiffexpFunctionString )
-rownames(tbldata) <- c("cluster", "% diffexp", "num_diffexp", "total", "functions", "Diffexp functions");
+m1.topFunctionString <- lapply(m1.topFunctionsByCluster, stringifyData)
+m1.topDiffexpFunctionString <- lapply(m1.topDiffexpFunctionsByCluster, stringifyData)
+m1.tableData <- rbind(as.integer(cluster_list), pct_diffexp, num_diffexp, totalInMapperClusters, m1.topFunctionString, m1.topDiffexpFunctionString )
+rownames(m1.tableData) <- c("cluster", "% diffexp", "num_diffexp", "total", "functions", "Diffexp functions");
 
-topHClustFunctionString <- lapply(topHClusterFunctions, stringifyData)
-topHClustDiffexpFunctionString <- lapply(topHClusterDiffexpFunctions, stringifyData)
-htbldata <- rbind(as.integer(cluster_list), pct_diffexp_reg, num_diffexp_by_reg, totalInCluster, topHClustFunctionString, topHClustDiffexpFunctionString)
+hclusters.topHClustFunctionString <- lapply(hclusters.topHClusterFunctions, stringifyData)
+hclusters.topHClustDiffexpFunctionString <- lapply(hclusters.topHClusterDiffexpFunctions, stringifyData)
+hclusters.tableData <- rbind(as.integer(cluster_list), pct_diffexp_reg, num_diffexp_by_reg, totalInCluster, hclusters.topHClustFunctionString, hclusters.topHClustDiffexpFunctionString)
 
 
 #what are the functions of just the differentially expressed genes
