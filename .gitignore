@@ -1,4 +1,4 @@
-/TDAmapper/*
+TDAmapper*
 *.RData
 *.Rhistory
 App-Directory/.Rhistory
