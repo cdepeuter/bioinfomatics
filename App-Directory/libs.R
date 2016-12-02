@@ -7,12 +7,8 @@ biocLite("annotate")
 biocLite("mygene")
 biocLite("annotate")
 biocLite("GO.db")
-library(TDAmapper);
-library(networkD3);
-library(HSAUR);
-library(shiny);
-library(igraph);
-library(scatterplot3d);
+biocLite("moe430a.db")
+biocLite("hgu133a.db")
 biocLite("genefilter")
 
 #use unstable TDAMapper for up to date functions
@@ -26,13 +22,19 @@ library(mygene);
 library(annotate);
 library(tidyverse);
 library(cluster);
+library(TDAmapper);
+library(networkD3);
+library(HSAUR);
+library(shiny);
+library(igraph);
+library(scatterplot3d);
 library(annotate)
+library(moe430a.db)
 library(GO.db)
 library(Biobase)
 library(genefilter)
 library(clValid)
 library(annotate)
+library(hgu133a.db)
 library(GO.db)
-
-
 

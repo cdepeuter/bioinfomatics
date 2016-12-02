@@ -11,15 +11,11 @@ if(gds_set_name == "GDS1439"){
   gstats.healthy <- 1:6
   gstats.sick <- 7:19
   annotation_file <- "hgu133a.db"
-  biocLite("hgu133a.db")
-  library(hgu133a.db)
-  
 }else if(gds_set_name == "GDS5437"){
   gstats.healthy <- 10:14
   gstats.sick <- 1:9
   annotation_file <- "moe430a.db"
-  biocLite("moe430a.db")
-  library(moe430a.db)
+  
 }
 
 pval <- 0.05
