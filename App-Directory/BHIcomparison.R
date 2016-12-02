@@ -1,6 +1,6 @@
 #how do we evaluate these results?
 #BHI starts here
-
+debug.print("BHI analysis")
 names(Genebelongstocluster)=names(unlist(allClustersGenes))
 
 m1.bhi = BHI(Genebelongstocluster, annotation="moe430a.db", names=names(Genebelongstocluster), category="all")

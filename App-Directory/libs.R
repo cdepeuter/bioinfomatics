@@ -9,6 +9,7 @@ biocLite("annotate")
 biocLite("GO.db")
 biocLite("moe430a.db")
 biocLite("hgu133a.db")
+biocLite("genefilter")
 
 #use unstable TDAMapper for up to date functions
 #use proxy for ubuntu bug https://github.com/hadley/devtools/issues/877
@@ -31,6 +32,7 @@ library(annotate)
 library(moe430a.db)
 library(GO.db)
 library(Biobase)
+library(genefilter)
 library(clValid)
 library(annotate)
 library(hgu133a.db)

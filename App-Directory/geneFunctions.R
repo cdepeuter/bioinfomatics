@@ -23,6 +23,8 @@ stringifyData <- function(rw){
 }
 
 
+debug.print("GENE FUNCTIONS")
+
 #what are the functions of the diff expressed genes
 functionDiffexpressedFrequency <- getFunctionsFromGeneList(diff_genes)
 #how many gene functions do we have
@@ -52,11 +54,11 @@ rownames(m1.tableData) <- c("cluster", "% diffexp", "num_diffexp", "total", "fun
 
 hclusters.topHClustFunctionString <- lapply(hclusters.topHClusterFunctions, stringifyData)
 hclusters.topHClustDiffexpFunctionString <- lapply(hclusters.topHClusterDiffexpFunctions, stringifyData)
-hclusters.tableData <- rbind(as.integer(cluster_list), pct_diffexp_reg, num_diffexp_by_reg, totalInCluster, hclusters.topHClustFunctionString, hclusters.topHClustDiffexpFunctionString)
+hclusters.tableData <- rbind(as.integer(cluster_list), pct_diffexp_reg, num_diffexp_by_reg, hclusters.totalInCluster, hclusters.topHClustFunctionString, hclusters.topHClustDiffexpFunctionString)
 
 
 #what are the functions of just the differentially expressed genes
-
+debug.print("building mapper nodes")
 
 MapperNodes <- mapperVertices(m1, geneIds)
 MapperLinks <- mapperEdges(m1)

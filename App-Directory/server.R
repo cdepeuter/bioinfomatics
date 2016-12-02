@@ -1,5 +1,8 @@
 function(input, output) {
-  source("./analysis.R")
+  if(!exists("m1")){
+    source("./analysis.R")
+  }
+ 
   
   # data <- eventReactive(input$go, {
   #   rnorm(input$num)
@@ -12,7 +15,7 @@ function(input, output) {
     plot(g1, layout = layout.auto(g1), 
          main = gds_set_name,
          vertex.color = colorRampPalette(c('blue', 'red'))(length(pct_diffexp))[rank(pct_diffexp)],
-         vertex.size = 7*totalInMapperClusters/(dim(fil3)[1]/m1$num_vertices)
+         vertex.size = 7*totalInMapperClusters/(dim(affy_fil)[1]/m1$num_vertices)
     )
   })
   

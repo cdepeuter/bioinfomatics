@@ -1,5 +1,5 @@
 numcenters <- m1$num_vertices
-kclust <- kmeans(fil3, centers=numcenters, iter.max=50)
+kclust <- kmeans(affy_fil, centers=numcenters, iter.max=50)
 bhikclust <- BHI(kclust$cluster, annotation="moe430a.db", names=names(kclust$cluster), category="all")
 
 
