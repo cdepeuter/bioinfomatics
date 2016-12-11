@@ -1,15 +1,15 @@
-source("https://bioconductor.org/biocLite.R"); ## try http:// if https:// URLs are not supported
-biocLite("affy");
-biocLite("limma");
-biocLite("clValid")
-biocLite("hopach")
-biocLite("annotate")
-biocLite("mygene")
-biocLite("annotate")
-biocLite("GO.db")
-biocLite("moe430a.db")
-biocLite("hgu133a.db")
-biocLite("genefilter")
+# source("https://bioconductor.org/biocLite.R"); ## try http:// if https:// URLs are not supported
+# biocLite("affy");
+# biocLite("limma");
+# biocLite("clValid")
+# biocLite("hopach")
+# biocLite("annotate")
+# biocLite("mygene")
+# biocLite("annotate")
+# biocLite("GO.db")
+# biocLite("moe430a.db")
+# biocLite("hgu133a.db")
+# biocLite("genefilter")
 
 #use unstable TDAMapper for up to date functions
 #use proxy for ubuntu bug https://github.com/hadley/devtools/issues/877

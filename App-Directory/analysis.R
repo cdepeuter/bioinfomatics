@@ -5,13 +5,11 @@
 #setwd("~/Documents/columbia/bioinformatics/project/App-Directory")
 
 
-
-#TODO better way to decide this or just add as inputs on UI
 #mapper inputs
 if(!exists("gridSearch") || !gridSearch ){
   m1.overlap = 15
-  m1.intervals = 25
-  m1.bins = 20
+  m1.intervals = 16
+  m1.bins = 22
 }
 
 
@@ -20,11 +18,6 @@ if(!exists("affy_exp")){
   debug.print("loading data")
   source("./loadData.R")
 }
-
-#TODO filter out genes whos expression does not change across samples
-
-#TODO check for redundant genes
-#http://www3.stat.sinica.edu.tw/statistica/oldpdf/A12n112.pdf
 
 
 time1 <-proc.time()

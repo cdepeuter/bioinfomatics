@@ -6,7 +6,7 @@ names(Genebelongstocluster)=names(unlist(allClustersGenes))
 m1.bhi = BHI(Genebelongstocluster, annotation=annotation_file, names=names(Genebelongstocluster), category="all")
 
 hclusters.bhi = BHI(hclusters.clusts,annotation=annotation_file,names=names(hclusters.clusts),category = "all")
-
+kclust.bhi = BHI(kclust$cluster,annotation=annotation_file,names=names(hclusters.clusts),category = "all")
 
 m1.diffGenesInClust = Genebelongstocluster[which(names(Genebelongstocluster) %in% diff_genes)]
 hclusters.diffGenesInClusts = hclusters.clusts[which(names(hclusters.clusts) %in% diff_genes)]
@@ -17,5 +17,5 @@ kclust.bhiDiffGenes = BHI(kclust.diffGenesInClusts,annotation=annotation_file,na
 
 
 #write to table
-bhis <- c(m1.bhiDiffGenes, hclusters.bhiDiffGenes, kclust.bhiDiffGenes)
+bhis <- c(m1.bhi, hclusters.bhi, kclust.bhi)
 names(bhis) <- c("MAPPER", "H-Clust", "K-means")
