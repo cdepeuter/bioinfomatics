@@ -22,6 +22,10 @@ stringifyData <- function(rw){
   return(paste(firstCollapse, collapse = ", "))
 }
 
+getFunctionsInAnalysisFormat <- function(genes, max = length(genes)){
+  byGenes <- lapply(genes, getFunctionNamesForGene)
+  return(byGenes)
+} 
 
 debug.print("GENE FUNCTIONS")
 
