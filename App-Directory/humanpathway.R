@@ -44,7 +44,7 @@ getpvaluefromfisher=function(i){
 contingency[1,1]=pathwaydiffcount[i];
 contingency[1,2]=length(l3[[i]][-1])-length(contingency[1,1]);
 contingency[2,1]=length(diff_genes)-length(contingency[1,1]);
-contingency[2,2]=length(fil3[,1])-length(diff_genes)-length(contingency[1,2]);
+contingency[2,2]=length(rownames(affy_fil))-length(diff_genes)-length(contingency[1,2]);
 return(fisher.test(as.matrix(contingency),alternative = "greater"))
 }
 
@@ -63,13 +63,23 @@ result_matrix=cbind(uni3$V2,pvalue,deg_pathway_fdr)
 colnames(result_matrix)=c('Pathway','P-value','FDR')
 deg_order=order(pvalue)
 result_matrix=result_matrix[deg_order,]
-goodpathways = unlist(result_matrix[1:5,1])
+
+
+goodpathways = unlist(result_matrix[1:10,1])
 indexofgoodpathways = which(uni3$V2 %in% goodpathways)
 goodpathwaygenes = pathwaydiffgenes[indexofgoodpathways]
+
+
 clustersofgoodpathwaygenes = list()
+clustersofgoodpathwaygenesH = list()
+clustersofgoodpathwaygenesK = list()
 for(i in 1:length(goodpathwaygenes)){
   goodpathwaygenes[i]=lapply(goodpathwaygenes[i],uniprottogene)
 }
 for(i in 1:length(goodpathwaygenes)){
-  clustersofgoodpathwaygenes[[i]]=unlist(lapply(unlist(goodpathwaygenes[i]),getClusterForGene))
+  clustersofgoodpathwaygenes[[i]] = unlist(lapply((goodpathwaygenes[[i]]),getVertexForGene))
+  clustersofgoodpathwaygenesH[[i]] = hclusters.clusts[which(names(hclusters.clusts) %in% goodpathwaygenes[[i]])]
+  clustersofgoodpathwaygenesK[[i]] = kclust$cluster[which(names(kclust$cluster) %in% goodpathwaygenes[[i]])]
 }
+
+
