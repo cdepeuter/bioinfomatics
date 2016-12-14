@@ -25,6 +25,8 @@ sortedVerts <- sort(unique(allValues$num.verticies))
 flattenMapperBHI <- unlist(lapply(sortedVerts, function(x){mean(allValues[allValues$num.verticies == x, "mapperBHI"])}))
 flattenHclustBHI <- unlist(lapply(sortedVerts, function(x){mean(allValues[allValues$num.verticies == x, "hclustBHI"])}))
 flattenKclustBHI <- unlist(lapply(sortedVerts, function(x){mean(allValues[allValues$num.verticies == x, "kclustBHI"])}))
+
+
 jump <- 5
 
 
@@ -37,5 +39,5 @@ lines(sortedVerts, flattenMapperBHI, col = colors[1])
 lines(sortedVerts, flattenHclustBHI, col = colors[2])
 lines(sortedVerts, flattenKclustBHI, col = colors[3])
 
-legend('bottomright', c("Mapper", "HClust", "K Clust"), col=colors, lty=c(1,1))
+legend('bottomright', c("Mapper", "H Clust", "K Clust"), col=colors,text.width = 100, lty=c(1,1))
 

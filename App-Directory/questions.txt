@@ -1,2 +1,0 @@
-is the do.log2 = TRUE enough of a standardization for the data? should we be looking for other sources of noise?
-
