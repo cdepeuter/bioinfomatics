@@ -25,22 +25,24 @@ fluidPage(
                #tags$img(src = "/rplt.png")
              )
     ),
-    tabPanel("Tables",
+    tabPanel("Gene Function Tables",
              mainPanel(
                tags$div(class="infoTables",
                  tags$div(class="diffexpInfoTable", 
+                        tags$div("Mapper Function"),
                         tableOutput('diffExpTable')
                ),
                tags$div(class="clusterInfoTable", 
+                        tags$div("H-Clust Functions"),
                         tableOutput('hTable')
                )
             )
         )
             
     ),
-    tabPanel("Hierarchical Clusters", 
+    tabPanel("Pathway Analysis", 
              mainPanel(
-               plotOutput('hclustPlot')
+               tableOutput('pathwayDisplayTable')
              )
     )
     # tags$head(

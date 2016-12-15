@@ -1,12 +1,9 @@
-#get gene omnibus
-#https://www.ncbi.nlm.nih.gov/gds/?term=metastatic
-# need to make sure whatever datasets we get from here have features we can look for (highly/lowly metastatic)
-#gds5437 https://www.ncbi.nlm.nih.gov/sites/GDSbrowser?acc=GDS5437
-#setwd("~/Documents/columbia/bioinformatics/project/App-Directory")
+
 
 
 #mapper inputs
 if(!exists("gridSearch") || !gridSearch ){
+  #these are not the optimal parameters from the study but they make a prettier graph
   m1.overlap = 15
   m1.intervals = 16
   m1.bins = 22
@@ -182,4 +179,5 @@ source("./BHIcomparison.R")
 
 #do pathway analysis
 source(pathwayFile)
+source("./pathwayAnalysis.R")
 

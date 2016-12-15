@@ -55,3 +55,4 @@ result_matrix=cbind(uni3$V2,pvalue,deg_pathway_fdr)
 colnames(result_matrix)=c('Pathway','P-value','FDR')
 deg_order=order(pvalue)
 result_matrix=result_matrix[deg_order,]
+pathwayDisplayTable <- tbl_df(result_matrix[1:15,])

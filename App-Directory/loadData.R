@@ -2,8 +2,8 @@ debug.debug=TRUE
 debug.print <- function(x){if(debug.debug){print(x)}}
 
 
-gds_set_name <- "GDS5437"
-#gds_set_name <- "GDS1439"
+#gds_set_name <- "GDS5437"
+gds_set_name <- "GDS1439"
 
 
 #set columns for healthy/sick data
