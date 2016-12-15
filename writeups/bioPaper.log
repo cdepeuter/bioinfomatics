@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.17 (TeX Live 2016) (preloaded format=pdflatex 2016.5.22)  14 DEC 2016 17:01
+This is pdfTeX, Version 3.14159265-2.6-1.40.17 (TeX Live 2016) (preloaded format=pdflatex 2016.5.22)  14 DEC 2016 17:25
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -296,35 +296,35 @@ File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 <plotTrend.png, id=11, 612.2875pt x 417.56pt>
 File: plotTrend.png Graphic file (type png)
  <use plotTrend.png>
-Package pdftex.def Info: plotTrend.png used on input line 75.
+Package pdftex.def Info: plotTrend.png used on input line 74.
 (pdftex.def)             Requested size: 472.03123pt x 321.91083pt.
 
 
 LaTeX Warning: No positions in optional float specifier.
-               Default added (so using `tbp') on input line 81.
+               Default added (so using `tbp') on input line 80.
 
 
-Overfull \hbox (27.45557pt too wide) in paragraph at lines 85--90
+Overfull \hbox (27.45557pt too wide) in paragraph at lines 84--89
  [][] 
  []
 
 
 LaTeX Warning: No positions in optional float specifier.
-               Default added (so using `tbp') on input line 92.
+               Default added (so using `tbp') on input line 91.
 
 
-Overfull \hbox (27.45557pt too wide) in paragraph at lines 96--101
+Overfull \hbox (27.45557pt too wide) in paragraph at lines 95--100
  [][] 
  []
 
 [2] [3 <./plotTrend.png>] [4]
-Underfull \hbox (badness 10000) in paragraph at lines 174--175
+Underfull \hbox (badness 10000) in paragraph at lines 170--171
 []\OT1/cmr/m/n/10 Breast can-cer - Ge-net-ics Home Ref-er-ence. (n.d.). Re-trie
 ved Novem-ber 01, 2016, from
  []
 
 
-Underfull \hbox (badness 6078) in paragraph at lines 175--176
+Underfull \hbox (badness 6078) in paragraph at lines 171--172
 []\OT1/cmr/m/n/10 Prostate can-cer - Ge-net-ics Home Ref-er-ence. (n.d.). Re-tr
 ieved Novem-ber 01, 2016, from
  []
@@ -337,7 +337,7 @@ Here is how much of TeX's memory you used:
  7570 multiletter control sequences out of 15000+600000
  7632 words of font info for 29 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 44i,8n,42p,1740b,293s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 44i,8n,42p,1730b,293s stack positions out of 5000i,500n,10000p,200000b,80000s
 </usr/local/texlive/2016/texmf-dist/fonts/type1/public/am
 sfonts/cm/cmbx10.pfb></usr/local/texlive/2016/texmf-dist/fonts/type1/public/ams
 fonts/cm/cmmi10.pfb></usr/local/texlive/2016/texmf-dist/fonts/type1/public/amsf
@@ -347,7 +347,7 @@ ts/cm/cmr12.pfb></usr/local/texlive/2016/texmf-dist/fonts/type1/public/amsfonts
 /cmsy10.pfb></usr/local/texlive/2016/texmf-dist/fonts/type1/public/amsfonts/cm/
 cmti10.pfb></usr/local/texlive/2016/texmf-dist/fonts/type1/public/amsfonts/cm/c
 mti8.pfb>
-Output written on bioPaper.pdf (5 pages, 164404 bytes).
+Output written on bioPaper.pdf (5 pages, 164497 bytes).
 PDF statistics:
  55 PDF objects out of 1000 (max. 8388607)
  37 compressed objects within 1 object stream
