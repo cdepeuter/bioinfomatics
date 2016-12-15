@@ -180,3 +180,6 @@ source("./geneFunctions.R")
 #do BHI evaluation
 source("./BHIcomparison.R")
 
+#do pathway analysis
+source(pathwayFile)
+

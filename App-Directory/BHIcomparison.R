@@ -4,7 +4,6 @@ debug.print("BHI analysis")
 names(Genebelongstocluster)=names(unlist(allClustersGenes))
 
 m1.bhi = BHI(Genebelongstocluster, annotation=annotation_file, names=names(Genebelongstocluster), category="all")
-
 hclusters.bhi = BHI(hclusters.clusts,annotation=annotation_file,names=names(hclusters.clusts),category = "all")
 kclust.bhi = BHI(kclust$cluster,annotation=annotation_file,names=names(hclusters.clusts),category = "all")
 

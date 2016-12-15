@@ -26,6 +26,11 @@ getFunctionsInAnalysisFormat <- function(genes, max = length(genes)){
   byGenes <- lapply(genes, getFunctionNamesForGene)
   return(byGenes)
 } 
+genesandtheirfunctions = lapply(rownames(affy_fil),getFunctionsInAnalysisFormat)
+
+genesandtheirfunctions = lapply(genesandtheirfunctions,unlist)
+listofgenefunctions = unique(unlist(genesandtheirfunctions))
+
 
 debug.print("GENE FUNCTIONS")
 

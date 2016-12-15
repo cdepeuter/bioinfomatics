@@ -15,6 +15,7 @@ if(gds_set_name == "GDS1439"){
   gstats.poanum <- 8
   gstats.iqr <- .75
   pval <- .01
+  pathwayFile <- "./humanpathway.R"
 }else if(gds_set_name == "GDS5437"){
   gstats.healthy <- 10:14
   gstats.sick <- 1:9
@@ -23,6 +24,7 @@ if(gds_set_name == "GDS1439"){
   gstats.poanum <- 7.5
   gstats.iqr <- .25
   pval <- .05
+  pathwayFile <- "./mousepath.R"
 }
 
 pval <- 0.01
