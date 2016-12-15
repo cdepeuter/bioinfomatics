@@ -7,6 +7,11 @@ if(!exists("gridSearch") || !gridSearch ){
   m1.overlap = 15
   m1.intervals = 16
   m1.bins = 22
+  
+  #optimal bhi params
+  # m1.overlap = 26
+  # m1.intervals = 20
+  # m1.bins = 35
 }
 
 
@@ -172,7 +177,7 @@ source("./kmeans.R")
 
 #do gene function analysis
 source("./geneFunctions.R")
-
+source("./genefunctions2.R")
 
 #do BHI evaluation
 source("./BHIcomparison.R")

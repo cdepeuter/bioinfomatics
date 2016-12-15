@@ -11,9 +11,9 @@ if(gds_set_name == "GDS1439"){
   gstats.healthy <- 1:6
   gstats.sick <- 7:19
   annotation_file <- "hgu133a.db"
-  gstats.poapct <- .6
-  gstats.poanum <- 8
-  gstats.iqr <- .75
+  gstats.poapct <- .4
+  gstats.poanum <- 10.5
+  gstats.iqr <- 0
   pval <- .01
   pathwayFile <- "./humanpathway.R"
 }else if(gds_set_name == "GDS5437"){
