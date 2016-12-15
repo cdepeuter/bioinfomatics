@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.17 (TeX Live 2016) (preloaded format=pdflatex 2016.5.22)  15 DEC 2016 00:21
+This is pdfTeX, Version 3.14159265-2.6-1.40.17 (TeX Live 2016) (preloaded format=pdflatex 2016.5.22)  15 DEC 2016 11:13
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -287,7 +287,7 @@ File: plotTrend.png Graphic file (type png)
  <use plotTrend.png>
 Package pdftex.def Info: plotTrend.png used on input line 76.
 (pdftex.def)             Requested size: 472.03123pt x 321.91083pt.
-
+ [2]
 
 LaTeX Warning: No positions in optional float specifier.
                Default added (so using `tbp') on input line 82.
@@ -306,52 +306,49 @@ Overfull \hbox (27.45557pt too wide) in paragraph at lines 97--102
  [][] 
  []
 
-[2] [3 <./plotTrend.png>]
-
-LaTeX Warning: No positions in optional float specifier.
-               Default added (so using `tbp') on input line 110.
-
-
-LaTeX Warning: No positions in optional float specifier.
-               Default added (so using `tbp') on input line 134.
-
-[4] <goldstandard1.png, id=26, 576.35326pt x 357.13425pt>
+[3 <./plotTrend.png>] <goldstandard1.png, id=23, 576.35326pt x 357.13425pt>
 File: goldstandard1.png Graphic file (type png)
 
 <use goldstandard1.png>
-Package pdftex.def Info: goldstandard1.png used on input line 163.
+Package pdftex.def Info: goldstandard1.png used on input line 112.
 (pdftex.def)             Requested size: 236.01561pt x 146.24615pt.
- <goldstandard2.png, id=27, 577.55775pt x 363.15675pt>
+ <goldstandard2.png, id=24, 577.55775pt x 363.15675pt>
 File: goldstandard2.png Graphic file (type png)
 
 <use goldstandard2.png>
-Package pdftex.def Info: goldstandard2.png used on input line 168.
+Package pdftex.def Info: goldstandard2.png used on input line 117.
 (pdftex.def)             Requested size: 236.01561pt x 148.40204pt.
- [5 <./goldstandard1.png> <./goldstandard2.png>]
-Underfull \hbox (badness 10000) in paragraph at lines 217--218
-[]\OT1/cmr/m/n/10 Breast can-cer - Ge-net-ics Home Ref-er-ence. (n.d.). Re-trie
-ved Novem-ber 01, 2016, from
- []
 
 
-Underfull \hbox (badness 6078) in paragraph at lines 218--219
+LaTeX Warning: No positions in optional float specifier.
+               Default added (so using `tbp') on input line 132.
+
+[4 <./goldstandard1.png> <./goldstandard2.png>]
+
+LaTeX Warning: No positions in optional float specifier.
+               Default added (so using `tbp') on input line 156.
+
+[5]
+Missing character: There is no ø in font cmr10!
+
+Underfull \hbox (badness 6078) in paragraph at lines 219--220
 []\OT1/cmr/m/n/10 Prostate can-cer - Ge-net-ics Home Ref-er-ence. (n.d.). Re-tr
 ieved Novem-ber 01, 2016, from
  []
 
-[6] (./bioPaper.aux)
+[6] [7] (./bioPaper.aux)
 
 LaTeX Warning: There were multiply-defined labels.
 
  ) 
 Here is how much of TeX's memory you used:
- 4000 strings out of 493014
- 59177 string characters out of 6133351
- 134128 words of memory out of 5000000
- 7493 multiletter control sequences out of 15000+600000
+ 4006 strings out of 493014
+ 59255 string characters out of 6133351
+ 132159 words of memory out of 5000000
+ 7499 multiletter control sequences out of 15000+600000
  7632 words of font info for 29 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 38i,8n,39p,1924b,369s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 38i,8n,39p,1958b,369s stack positions out of 5000i,500n,10000p,200000b,80000s
 </usr/local/texlive/2016/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx10.pfb
 ></usr/local/texlive/2016/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb>
 </usr/local/texlive/2016/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></
@@ -360,10 +357,10 @@ r/local/texlive/2016/texmf-dist/fonts/type1/public/amsfonts/cm/cmr8.pfb></usr/l
 ocal/texlive/2016/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/lo
 cal/texlive/2016/texmf-dist/fonts/type1/public/amsfonts/cm/cmti10.pfb></usr/loc
 al/texlive/2016/texmf-dist/fonts/type1/public/amsfonts/cm/cmti8.pfb>
-Output written on bioPaper.pdf (6 pages, 233657 bytes).
+Output written on bioPaper.pdf (7 pages, 238326 bytes).
 PDF statistics:
- 62 PDF objects out of 1000 (max. 8388607)
- 39 compressed objects within 1 object stream
+ 67 PDF objects out of 1000 (max. 8388607)
+ 43 compressed objects within 1 object stream
  0 named destinations out of 1000 (max. 500000)
  16 words of extra memory for PDF output out of 10000 (max. 10000000)
 
