@@ -17,3 +17,14 @@ goldStandardProstateCancer <- c('AR', 'BRCA1', 'BRCA2', 'CD82', 'CDH1', 'CHEK2',
 # 
 # thisGene <- featureData[1, "Gene ID"]
 # geneSearch <- getGene(thisGene)
+
+goldstandardprostateaffymapping = AnnotationDbi::select(hgu133a.db,keys=rownames(affy_exp),"SYMBOL")
+goldstandardprostateaffynames = goldstandardprostateaffymapping$PROBEID[which(goldstandardprostateaffymapping$SYMBOL %in% goldStandardProstateCancer)]
+
+goldstandardmappercluster = (lapply(goldstandardprostateaffynames,getVertexForGene))
+names(goldstandardmappercluster) = goldstandardprostateaffynames
+goldstandardmappercluster = unlist(goldstandardmappercluster)
+
+goldstandardhcluster = hclusters.clusts[which(names(hclusters.clusts) %in% goldstandardprostateaffynames)]
+
+goldstandardkcluster = kclust$cluster[which(names(kclust$cluster) %in% goldstandardprostateaffynames)]

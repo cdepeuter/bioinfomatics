@@ -11,14 +11,23 @@ if(gds_set_name == "GDS1439"){
   gstats.healthy <- 1:6
   gstats.sick <- 7:19
   annotation_file <- "hgu133a.db"
+  gstats.poapct <- .6
+  gstats.poanum <- 8
+  gstats.iqr <- .75
+  pval <- .01
+  pathwayFile <- "./humanpathway.R"
 }else if(gds_set_name == "GDS5437"){
   gstats.healthy <- 10:14
   gstats.sick <- 1:9
   annotation_file <- "moe430a.db"
-  
+  gstats.poapct <- .2
+  gstats.poanum <- 7.5
+  gstats.iqr <- .25
+  pval <- .05
+  pathwayFile <- "./mousepath.R"
 }
 
-pval <- 0.05
+pval <- 0.01
 max_diffexp <- 1000
 
 
@@ -29,17 +38,18 @@ affy_exp_names <- rownames(affy_exp);
 featureData<-fData(eset)
 
 #do pre-filtering
-f1 <- pOverA(.45, 9.5)
+#poverA -> gene expression value above pct, in at least num samples
+f1 <- pOverA(gstats.poapct, gstats.poanum)
 filterFunction <- filterfun(f1)
 mask <- genefilter(affy_exp, filterFunction)
 f2 <- function(x){
-  IQR(x) > .75
+  IQR(x) > gstats.iqr
 }
 filterFunction2 <- filterfun(f2)
 
 mask2 <- genefilter(affy_exp, filterFunction2)
 
-affy_fil <- affy_exp[mask,]
+affy_fil <- affy_exp[mask &mask2,]
 debug.print("Dimension of filtered data")
 debug.print(dim(affy_fil))
 
@@ -68,7 +78,8 @@ filT = t(affy_fil)
 #corr = cor(filT,method="spearman")
 #TODO test different methods for correlation/distance
 debug.print("Getting distance/correlation")
-corr = cor(filT,method="spearman")
+corr = cor(filT,method="pearson")
+#corr = cor(filT,method="spearman")
 dsy <- daisy(affy_fil)
 
 #do mapper, what clusters do the differentially expressed genes end up in

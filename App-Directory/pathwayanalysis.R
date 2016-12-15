@@ -36,7 +36,7 @@ getpvaluefromfisher=function(i){
 contingency[1,1]=pathwaydiffcount[i];
 contingency[1,2]=length(l3[[i]][-1])-length(contingency[1,1]);
 contingency[2,1]=length(diff_genes)-length(contingency[1,1]);
-contingency[2,2]=length(fil3[,1])-length(diff_genes)-length(contingency[1,2]);
+contingency[2,2]=length(affy_fil[,1])-length(diff_genes)-length(contingency[1,2]);
 return(fisher.test(as.matrix(contingency),alternative = "greater"))
 }
 
